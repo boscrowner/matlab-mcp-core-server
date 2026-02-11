@@ -5,10 +5,10 @@ package parser_test
 import (
 	"testing"
 
-	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/application/inputs/parser"
+	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/application/parameter/parser"
 	"github.com/matlab/matlab-mcp-core-server/internal/entities"
 	"github.com/matlab/matlab-mcp-core-server/internal/messages"
-	parsermocks "github.com/matlab/matlab-mcp-core-server/mocks/adaptors/application/inputs/parser"
+	parsermocks "github.com/matlab/matlab-mcp-core-server/mocks/adaptors/application/parameter/parser"
 	entitiesmocks "github.com/matlab/matlab-mcp-core-server/mocks/entities"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -29,7 +29,16 @@ func TestParser_Parse_HappyPath(t *testing.T) {
 	paramEnvVar := "TEST_ENV_VAR"
 	paramDefaultValue := "default-value"
 
-	mockParam := newMockParam(t, paramID, "test-flag", paramEnvVar, paramDefaultValue, "Test description", false)
+	mockParam := newMockParam(
+		t,
+		paramID,
+		"test-flag",
+		paramEnvVar,
+		paramDefaultValue,
+		"Test description",
+		false,
+		true,
+	)
 
 	mockDefaultParamFactory.EXPECT().
 		DefaultParameters().
@@ -74,7 +83,16 @@ func TestParser_Parse_FlagOverridesDefault(t *testing.T) {
 	paramEnvVar := "TEST_ENV_VAR"
 	expectedFlagValue := "flag-value"
 
-	mockParam := newMockParam(t, paramID, paramFlagName, paramEnvVar, "default-value", "Test description", false)
+	mockParam := newMockParam(
+		t,
+		paramID,
+		paramFlagName,
+		paramEnvVar,
+		"default-value",
+		"Test description",
+		false,
+		true,
+	)
 
 	mockDefaultParamFactory.EXPECT().
 		DefaultParameters().
@@ -118,7 +136,16 @@ func TestParser_Parse_EnvVarOverridesDefault(t *testing.T) {
 	paramEnvVar := "TEST_ENV_VAR"
 	expectedEnvValue := "env-value"
 
-	mockParam := newMockParam(t, paramID, "test-flag", paramEnvVar, "default-value", "Test description", false)
+	mockParam := newMockParam(
+		t,
+		paramID,
+		"test-flag",
+		paramEnvVar,
+		"default-value",
+		"Test description",
+		false,
+		true,
+	)
 
 	mockDefaultParamFactory.EXPECT().
 		DefaultParameters().
@@ -164,7 +191,16 @@ func TestParser_Parse_FlagOverridesEnvVar(t *testing.T) {
 	envValue := "env-value"
 	expectedFlagValue := "flag-value"
 
-	mockParam := newMockParam(t, paramID, paramFlagName, paramEnvVar, "default-value", "Test description", false)
+	mockParam := newMockParam(
+		t,
+		paramID,
+		paramFlagName,
+		paramEnvVar,
+		"default-value",
+		"Test description",
+		false,
+		true,
+	)
 
 	mockDefaultParamFactory.EXPECT().
 		DefaultParameters().
@@ -208,7 +244,16 @@ func TestParser_Parse_ParameterWithNoFlag(t *testing.T) {
 	paramEnvVar := "NO_FLAG_ENV_VAR"
 	expectedEnvValue := "env-value"
 
-	mockParam := newMockParam(t, paramID, "", paramEnvVar, "default", "", false)
+	mockParam := newMockParam(
+		t,
+		paramID,
+		"",
+		paramEnvVar,
+		"default",
+		"",
+		false,
+		true,
+	)
 
 	mockDefaultParamFactory.EXPECT().
 		DefaultParameters().
@@ -568,7 +613,16 @@ func TestParser_Usage_HappyPath(t *testing.T) {
 	paramFlagName := "test-flag"
 	paramDescription := "Test description"
 
-	mockParam := newMockParam(t, "test-param", paramFlagName, "", "default", paramDescription, false)
+	mockParam := newMockParam(
+		t,
+		"test-param",
+		paramFlagName,
+		"",
+		"default",
+		paramDescription,
+		false,
+		true,
+	)
 
 	mockDefaultParamFactory.EXPECT().
 		DefaultParameters().
@@ -604,8 +658,26 @@ func TestParser_Usage_HiddenFlagNotShown(t *testing.T) {
 	visibleFlagName := "visible-flag"
 	hiddenFlagName := "hidden-flag"
 
-	mockVisibleParam := newMockParam(t, "visible-param", visibleFlagName, "", "default", "Visible description", false)
-	mockHiddenParam := newMockParam(t, "hidden-param", hiddenFlagName, "", "default", "Hidden description", true)
+	mockVisibleParam := newMockParam(
+		t,
+		"visible-param",
+		visibleFlagName,
+		"",
+		"default",
+		"Visible description",
+		false,
+		true,
+	)
+	mockHiddenParam := newMockParam(
+		t,
+		"hidden-param",
+		hiddenFlagName,
+		"",
+		"default",
+		"Hidden description",
+		true,
+		true,
+	)
 
 	mockDefaultParamFactory.EXPECT().
 		DefaultParameters().
@@ -702,6 +774,7 @@ func newMockParam(
 	defaultValue any,
 	description string,
 	hidden bool,
+	active bool,
 ) *entitiesmocks.MockParameter {
 	mock := &entitiesmocks.MockParameter{}
 	t.Cleanup(func() { mock.AssertExpectations(t) })
@@ -719,11 +792,15 @@ func newMockParam(
 		Return(envVarName)
 
 	mock.EXPECT().
+		GetActive().
+		Return(active)
+
+	mock.EXPECT().
 		GetDefaultValue().
 		Return(defaultValue)
 
-	// Description and HiddenFlag are only used for flag setup
-	if flagName != "" {
+	// Description and HiddenFlag are only used for flag setup of active parameters
+	if flagName != "" && active {
 		mock.EXPECT().
 			GetDescription().
 			Return(description)

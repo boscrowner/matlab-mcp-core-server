@@ -9,11 +9,11 @@ import (
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/application/config"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/application/definition"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/application/directory"
-	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/application/inputs/defaultparameters"
-	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/application/inputs/parser"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/application/lifecyclesignaler"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/application/modeselector"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/application/orchestrator"
+	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/application/parameter/defaultparameters/selector"
+	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/application/parameter/parser"
 	files "github.com/matlab/matlab-mcp-core-server/internal/adaptors/filesystem/files"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/globalmatlab"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/globalmatlab/matlabrootselector"
@@ -361,12 +361,13 @@ func Initialize(serverDefinition ApplicationDefinition) *Application {
 		// Parser
 		parser.New,
 		wire.Bind(new(parser.OSLayer), new(*osfacade.OsFacade)),
-		wire.Bind(new(parser.DefaultParameterFactory), new(*defaultparameters.Factory)),
+		wire.Bind(new(parser.DefaultParameterFactory), new(*selector.Selector)),
 		wire.Bind(new(parser.ParameterFactory), new(ApplicationDefinition)),
 
-		// Default Parameters
-		defaultparameters.NewFactory,
-		wire.Bind(new(defaultparameters.MessageCatalog), new(*messagecatalog.MessageCatalog)),
+		// Default Parameters Selector
+		selector.New,
+		wire.Bind(new(selector.ApplicationDefinition), new(ApplicationDefinition)),
+		wire.Bind(new(selector.MessageCatalog), new(*messagecatalog.MessageCatalog)),
 
 		// Message Catalog
 		messagecatalog.New,

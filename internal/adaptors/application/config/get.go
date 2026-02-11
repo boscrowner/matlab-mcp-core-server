@@ -5,11 +5,11 @@ package config
 import (
 	"reflect"
 
-	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/application/inputs/defaultparameters"
+	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/application/parameter"
 	"github.com/matlab/matlab-mcp-core-server/internal/messages"
 )
 
-func get[OutputType any](cfg GenericConfig, parameter *defaultparameters.ParameterDef[OutputType]) (OutputType, messages.Error) {
+func get[OutputType any](cfg GenericConfig, parameter *parameter.Parameter[OutputType]) (OutputType, messages.Error) {
 	var zeroValue OutputType
 
 	value, err := cfg.Get(parameter.GetID())

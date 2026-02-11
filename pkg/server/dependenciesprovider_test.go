@@ -9,6 +9,7 @@ import (
 	configmocks "github.com/matlab/matlab-mcp-core-server/mocks/adaptors/application/config"
 	definitionmocks "github.com/matlab/matlab-mcp-core-server/mocks/adaptors/application/definition"
 	entitiesmocks "github.com/matlab/matlab-mcp-core-server/mocks/entities"
+	"github.com/matlab/matlab-mcp-core-server/pkg/i18n"
 	"github.com/matlab/matlab-mcp-core-server/pkg/server"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -41,7 +42,7 @@ func TestDependenciesProvider_toInternal_HappyPath(t *testing.T) {
 	type TestDependencies struct{}
 	expectedDependencies := &TestDependencies{}
 
-	provider := server.DependenciesProvider[*TestDependencies](func(resources server.DependenciesProviderResources) (*TestDependencies, error) {
+	provider := server.DependenciesProvider[*TestDependencies](func(resources server.DependenciesProviderResources) (*TestDependencies, i18n.Error) {
 		resources.Logger().Info(expectedMessage)
 
 		result, err := resources.Config().Get(expectedKey, "")
@@ -80,9 +81,9 @@ func TestDependenciesProvider_toInternal_NilProvider(t *testing.T) {
 func TestDependenciesProvider_toInternal_Error(t *testing.T) {
 	// Arrange
 	type TestDependencies struct{}
-	expectedError := assert.AnError
+	expectedError := AnI18nError
 
-	provider := server.DependenciesProvider[*TestDependencies](func(resources server.DependenciesProviderResources) (*TestDependencies, error) {
+	provider := server.DependenciesProvider[*TestDependencies](func(resources server.DependenciesProviderResources) (*TestDependencies, i18n.Error) {
 		return &TestDependencies{}, expectedError // Returning an actual pointer, to make sure we mask it, and return nil
 	})
 
@@ -94,3 +95,11 @@ func TestDependenciesProvider_toInternal_Error(t *testing.T) {
 	require.ErrorIs(t, err, expectedError)
 	require.Nil(t, dependencies)
 }
+
+var AnI18nError = &i18nError{} //nolint:gochecknoglobals // AnError is an error
+
+type i18nError struct{}
+
+func (e *i18nError) Error() string { return "" }
+
+func (e *i18nError) MWMarker() {}

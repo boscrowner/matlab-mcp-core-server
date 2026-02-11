@@ -13,6 +13,7 @@ import (
 	internaltoolsmocks "github.com/matlab/matlab-mcp-core-server/mocks/adaptors/mcp/tools"
 	entitiesmocks "github.com/matlab/matlab-mcp-core-server/mocks/entities"
 	adaptormocks "github.com/matlab/matlab-mcp-core-server/mocks/wire/adaptor"
+	"github.com/matlab/matlab-mcp-core-server/pkg/i18n"
 	"github.com/matlab/matlab-mcp-core-server/pkg/server"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
@@ -429,7 +430,7 @@ func TestServer_StartAndWaitForCompletion_NilToolsProvider(t *testing.T) {
 		Name:         expectedDefinition.Name(),
 		Title:        expectedDefinition.Title(),
 		Instructions: expectedDefinition.Instructions(),
-		DependenciesProvider: func(resources server.DependenciesProviderResources) (*TestDependencies, error) {
+		DependenciesProvider: func(resources server.DependenciesProviderResources) (*TestDependencies, i18n.Error) {
 			return expectedDependencies, nil
 		},
 	}
@@ -486,7 +487,7 @@ func TestServer_StartAndWaitForCompletion_WithDependenciesProvider(t *testing.T)
 		Name:         expectedDefinition.Name(),
 		Title:        expectedDefinition.Title(),
 		Instructions: expectedDefinition.Instructions(),
-		DependenciesProvider: func(resources server.DependenciesProviderResources) (*TestDependencies, error) {
+		DependenciesProvider: func(resources server.DependenciesProviderResources) (*TestDependencies, i18n.Error) {
 			return expectedDependencies, nil
 		},
 	}

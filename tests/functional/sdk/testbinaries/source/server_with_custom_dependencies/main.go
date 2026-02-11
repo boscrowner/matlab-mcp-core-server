@@ -6,6 +6,7 @@ import (
 	"context"
 	"os"
 
+	"github.com/matlab/matlab-mcp-core-server/pkg/i18n"
 	"github.com/matlab/matlab-mcp-core-server/pkg/server"
 )
 
@@ -15,7 +16,7 @@ func main() {
 		Title:        "Server With Custom Dependencies",
 		Instructions: "This is a test server with custom dependencies",
 
-		DependenciesProvider: func(dependenciesProviderResources server.DependenciesProviderResources) (Dependencies, error) {
+		DependenciesProvider: func(dependenciesProviderResources server.DependenciesProviderResources) (Dependencies, i18n.Error) {
 			return DependenciesProvider(dependenciesProviderResources)
 		},
 		ToolsProvider: func(toolsProviderResources server.ToolsProviderResources[Dependencies]) []server.Tool {

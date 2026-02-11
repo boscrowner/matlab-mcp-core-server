@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/application/config"
-	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/application/inputs/defaultparameters"
+	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/application/parameter/defaultparameters"
 	"github.com/matlab/matlab-mcp-core-server/internal/messages"
 	configmocks "github.com/matlab/matlab-mcp-core-server/mocks/adaptors/application/config"
 	"github.com/stretchr/testify/assert"

@@ -41,6 +41,11 @@ func (p Parameter[ValueType]) GetDefaultValue() any {
 	return p.DefaultValue
 }
 
+func (p Parameter[ValueType]) GetActive() bool {
+	// SDK Parameters are always active
+	return true
+}
+
 func (p Parameter[ValueType]) GetRecordToLog() bool {
 	return p.RecordToLog
 }

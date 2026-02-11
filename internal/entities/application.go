@@ -10,5 +10,6 @@ type Parameter interface {
 	GetDescription() string
 	GetDefaultValue() any
 
+	GetActive() bool
 	GetRecordToLog() bool
 }

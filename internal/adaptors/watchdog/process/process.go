@@ -3,7 +3,7 @@
 package process
 
 import (
-	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/application/inputs/defaultparameters"
+	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/application/parameter/defaultparameters"
 	"github.com/matlab/matlab-mcp-core-server/internal/entities"
 	"github.com/matlab/matlab-mcp-core-server/internal/messages"
 )

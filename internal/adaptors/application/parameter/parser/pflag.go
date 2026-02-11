@@ -11,6 +11,10 @@ import (
 
 func (p *Parser) setupFlags() {
 	for flagName, parameter := range p.flagToParameter {
+		if !parameter.GetActive() {
+			continue
+		}
+
 		switch defaultValue := parameter.GetDefaultValue().(type) {
 		case bool:
 			p.flagSet.Bool(flagName, defaultValue, parameter.GetDescription())

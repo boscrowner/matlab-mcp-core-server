@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/matlab/matlab-mcp-core-server/pkg/config"
+	"github.com/matlab/matlab-mcp-core-server/pkg/i18n"
 	"github.com/matlab/matlab-mcp-core-server/pkg/server"
 )
 
@@ -21,7 +22,7 @@ func main() {
 			CustomRecordedParameter(),
 		},
 
-		DependenciesProvider: func(dependenciesProviderResources server.DependenciesProviderResources) (any, error) {
+		DependenciesProvider: func(dependenciesProviderResources server.DependenciesProviderResources) (any, i18n.Error) {
 			logger := dependenciesProviderResources.Logger()
 			cfg := dependenciesProviderResources.Config()
 

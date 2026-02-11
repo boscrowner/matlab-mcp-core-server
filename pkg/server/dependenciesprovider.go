@@ -5,6 +5,7 @@ package server
 import (
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/application/definition"
 	"github.com/matlab/matlab-mcp-core-server/pkg/config"
+	"github.com/matlab/matlab-mcp-core-server/pkg/i18n"
 	"github.com/matlab/matlab-mcp-core-server/pkg/logger"
 )
 
@@ -28,7 +29,7 @@ func (r DependenciesProviderResources) Config() config.Config {
 	return r.config
 }
 
-type DependenciesProvider[Dependencies any] func(dependenciesProviderResources DependenciesProviderResources) (Dependencies, error)
+type DependenciesProvider[Dependencies any] func(dependenciesProviderResources DependenciesProviderResources) (Dependencies, i18n.Error)
 
 func (p DependenciesProvider[Dependencies]) toInternal() definition.DependenciesProvider {
 	return func(resources definition.DependenciesProviderResources) (any, error) {
