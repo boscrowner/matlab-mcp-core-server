@@ -118,6 +118,9 @@ func FromError(catalog LocaleSpecificCatalog, err Error) string {
 			e.Attr0,
 			e.Attr1,
 		)
+	case *StartupErrors_TelemetryInitializationFailed_Error:
+		msg := catalog.Get(StartupErrors_TelemetryInitializationFailed)
+		return msg
 	}
 
 	// Consistency checks of the code generation mean this should never be reached

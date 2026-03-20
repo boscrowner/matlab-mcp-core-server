@@ -383,3 +383,19 @@ func New_StartupErrors_ParseFailed_Error(
 		Attr1: attr1,
 	}
 }
+
+// StartupErrors_TelemetryInitializationFailed_Error defines an error corresponding to the "StartupErrors_TelemetryInitializationFailed" message catalog message
+type StartupErrors_TelemetryInitializationFailed_Error struct {
+}
+
+// Error makes StartupErrors_TelemetryInitializationFailed_Error satisfy the error interface.
+func (e *StartupErrors_TelemetryInitializationFailed_Error) Error() string {
+	return "StartupErrors_TelemetryInitializationFailed_Error"
+}
+
+func (*StartupErrors_TelemetryInitializationFailed_Error) marker() {}
+
+// New_StartupErrors_TelemetryInitializationFailed_Error makes a new StartupErrors_TelemetryInitializationFailed_Error error.
+func New_StartupErrors_TelemetryInitializationFailed_Error() *StartupErrors_TelemetryInitializationFailed_Error {
+	return &StartupErrors_TelemetryInitializationFailed_Error{}
+}

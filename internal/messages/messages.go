@@ -36,6 +36,7 @@ var messages_en_US = messageMap{
 	StartupErrors_InvalidParameterType:                      `Invalid type for key "%[1]s" in configuration, expected "%[2]s".`,
 	StartupErrors_MissingValue:                              `Error with supplied arguments: value required for option %[1]s.`,
 	StartupErrors_ParseFailed:                               `Error with supplied arguments: parse failed.%[1]s%[2]s`,
+	StartupErrors_TelemetryInitializationFailed:             `Failed to initialize telemetry.`,
 }
 
 var all = localeMap{
