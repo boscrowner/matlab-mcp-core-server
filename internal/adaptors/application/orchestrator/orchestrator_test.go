@@ -441,7 +441,7 @@ func TestOrchestrator_StartAndWaitForCompletion_DependenciesError(t *testing.T) 
 	mockLogger := testutils.NewInspectableLogger()
 	ctx := t.Context()
 	expectedError := assert.AnError
-	expectedDependenciesProviderResources := definition.NewDependenciesProviderResources(mockLogger, mockConfig, mockMessageCatalog)
+	expectedDependenciesProviderResources := definition.NewDependenciesProviderResources(mockLogger, mockConfig, mockMessageCatalog, mockWatchdogClient)
 
 	mockConfigFactory.EXPECT().
 		Config().
@@ -562,7 +562,7 @@ func TestOrchestrator_StartAndWaitForCompletion_HappyPath(t *testing.T) {
 	defer close(stopServer)
 
 	expectedDependencies := &struct{}{}
-	expectedDependenciesProviderResources := definition.NewDependenciesProviderResources(mockLogger, mockConfig, mockMessageCatalog)
+	expectedDependenciesProviderResources := definition.NewDependenciesProviderResources(mockLogger, mockConfig, mockMessageCatalog, mockWatchdogClient)
 	expectedToolProviderResources := definition.NewToolsProviderResources(mockLogger, mockConfig, mockMessageCatalog, expectedDependencies, mockLoggerFactory)
 	expectedTools := []tools.Tool{mockTool}
 
@@ -726,7 +726,7 @@ func TestOrchestrator_StartAndWaitForCompletion_InitializeMATLABOnStartup_False(
 	ctx := t.Context()
 	interruptC := getInterruptChannel()
 	var expectedDependencies any
-	expectedDependenciesProviderResources := definition.NewDependenciesProviderResources(mockLogger, mockConfig, mockMessageCatalog)
+	expectedDependenciesProviderResources := definition.NewDependenciesProviderResources(mockLogger, mockConfig, mockMessageCatalog, mockWatchdogClient)
 	expectedToolProviderResources := definition.NewToolsProviderResources(mockLogger, mockConfig, mockMessageCatalog, expectedDependencies, mockLoggerFactory)
 	var expectedTools []tools.Tool
 
@@ -887,7 +887,7 @@ func TestOrchestrator_StartAndWaitForCompletion_MATLABFeatureDisabled(t *testing
 	ctx := t.Context()
 	interruptC := getInterruptChannel()
 	var expectedDependencies any
-	expectedDependenciesProviderResources := definition.NewDependenciesProviderResources(mockLogger, mockConfig, mockMessageCatalog)
+	expectedDependenciesProviderResources := definition.NewDependenciesProviderResources(mockLogger, mockConfig, mockMessageCatalog, mockWatchdogClient)
 	expectedToolProviderResources := definition.NewToolsProviderResources(mockLogger, mockConfig, mockMessageCatalog, expectedDependencies, mockLoggerFactory)
 	var expectedTools []tools.Tool
 
@@ -1041,7 +1041,7 @@ func TestOrchestrator_StartAndWaitForCompletion_ServerError(t *testing.T) {
 	interruptC := getInterruptChannel()
 	expectedError := assert.AnError
 	var expectedDependencies any
-	expectedDependenciesProviderResources := definition.NewDependenciesProviderResources(mockLogger, mockConfig, mockMessageCatalog)
+	expectedDependenciesProviderResources := definition.NewDependenciesProviderResources(mockLogger, mockConfig, mockMessageCatalog, mockWatchdogClient)
 	expectedToolProviderResources := definition.NewToolsProviderResources(mockLogger, mockConfig, mockMessageCatalog, expectedDependencies, mockLoggerFactory)
 	var expectedTools []tools.Tool
 
@@ -1194,7 +1194,7 @@ func TestOrchestrator_StartAndWaitForCompletion_InitializeMATLABErrorDoesNotTrig
 	closeServerRoutine := make(chan struct{})
 	isShutdownCalled := make(chan struct{})
 	var expectedDependencies any
-	expectedDependenciesProviderResources := definition.NewDependenciesProviderResources(mockLogger, mockConfig, mockMessageCatalog)
+	expectedDependenciesProviderResources := definition.NewDependenciesProviderResources(mockLogger, mockConfig, mockMessageCatalog, mockWatchdogClient)
 	expectedToolProviderResources := definition.NewToolsProviderResources(mockLogger, mockConfig, mockMessageCatalog, expectedDependencies, mockLoggerFactory)
 	var expectedTools []tools.Tool
 
@@ -1363,7 +1363,7 @@ func TestOrchestrator_StartAndWaitForCompletion_WaitForShutdownToCompleteError(t
 	interruptC := getInterruptChannel()
 	expectedError := assert.AnError
 	var expectedDependencies any
-	expectedDependenciesProviderResources := definition.NewDependenciesProviderResources(mockLogger, mockConfig, mockMessageCatalog)
+	expectedDependenciesProviderResources := definition.NewDependenciesProviderResources(mockLogger, mockConfig, mockMessageCatalog, mockWatchdogClient)
 	expectedToolProviderResources := definition.NewToolsProviderResources(mockLogger, mockConfig, mockMessageCatalog, expectedDependencies, mockLoggerFactory)
 	var expectedTools []tools.Tool
 
@@ -1532,7 +1532,7 @@ func TestOrchestrator_StartAndWaitForCompletion_WatchdogStopError(t *testing.T) 
 	interruptC := getInterruptChannel()
 	expectedError := assert.AnError
 	var expectedDependencies any
-	expectedDependenciesProviderResources := definition.NewDependenciesProviderResources(mockLogger, mockConfig, mockMessageCatalog)
+	expectedDependenciesProviderResources := definition.NewDependenciesProviderResources(mockLogger, mockConfig, mockMessageCatalog, mockWatchdogClient)
 	expectedToolProviderResources := definition.NewToolsProviderResources(mockLogger, mockConfig, mockMessageCatalog, expectedDependencies, mockLoggerFactory)
 	var expectedTools []tools.Tool
 
@@ -1707,7 +1707,7 @@ func TestOrchestrator_StartAndWaitForCompletion_MultipleSession_HappyPath(t *tes
 	ctx := t.Context()
 	interruptC := getInterruptChannel()
 	var expectedDependencies any
-	expectedDependenciesProviderResources := definition.NewDependenciesProviderResources(mockLogger, mockConfig, mockMessageCatalog)
+	expectedDependenciesProviderResources := definition.NewDependenciesProviderResources(mockLogger, mockConfig, mockMessageCatalog, mockWatchdogClient)
 	expectedToolProviderResources := definition.NewToolsProviderResources(mockLogger, mockConfig, mockMessageCatalog, expectedDependencies, mockLoggerFactory)
 	var expectedTools []tools.Tool
 

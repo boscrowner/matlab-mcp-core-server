@@ -40,6 +40,7 @@ type Server interface {
 
 type WatchdogClient interface {
 	Start() error
+	RegisterProcessPIDWithWatchdog(pid int) error
 	Stop() error
 }
 
@@ -149,6 +150,7 @@ func (o *Orchestrator) StartAndWaitForCompletion(ctx context.Context) error {
 		logger,
 		config,
 		o.messageCatalog,
+		o.watchdogClient,
 	))
 	if err != nil {
 		return err
