@@ -90,6 +90,16 @@ func (c *Collector) Stop(t *testing.T) {
 	c.containerID = ""
 }
 
+func (c *Collector) WaitForTelemetry(t *testing.T, timeout time.Duration) {
+	t.Helper()
+
+	pollInterval := 100 * time.Millisecond
+	require.Eventually(t, func() bool {
+		info, err := os.Stat(c.telemetryFile)
+		return err == nil && info.Size() > 0
+	}, timeout, pollInterval, "telemetry file was not written: %s", c.telemetryFile)
+}
+
 func (c *Collector) ReadTelemetry(t *testing.T) (pmetric.Metrics, error) {
 	data, err := os.ReadFile(c.telemetryFile)
 	if err != nil {

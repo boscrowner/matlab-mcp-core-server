@@ -7,6 +7,7 @@ package system_test
 import (
 	"os/exec"
 	"testing"
+	"time"
 
 	"github.com/matlab/matlab-mcp-core-server/tests/testutils/otel"
 	"github.com/stretchr/testify/suite"
@@ -30,7 +31,11 @@ func (s *TelemetryTestSuite) TestTelemetry() {
 	_, err := cmd.CombinedOutput()
 	s.Require().NoError(err, "version flag should execute successfully")
 
-	// Stop the collector, to flush
+	// Wait for the collector to receive and flush telemetry to disk
+	telemetryTimeout := 30 * time.Second
+	otelCollector.WaitForTelemetry(s.T(), telemetryTimeout)
+
+	// Stop the collector
 	otelCollector.Stop(s.T())
 
 	// Check the telemetry was indeed written
