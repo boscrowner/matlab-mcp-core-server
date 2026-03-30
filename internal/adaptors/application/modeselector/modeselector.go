@@ -4,6 +4,7 @@ package modeselector
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 
@@ -79,7 +80,7 @@ func New(
 	}
 }
 
-func (m *ModeSelector) StartAndWaitForCompletion(ctx context.Context) error {
+func (m *ModeSelector) StartAndWaitForCompletion(ctx context.Context) messages.Error {
 	config, err := m.configFactory.Config()
 	if err != nil {
 		return err
@@ -104,18 +105,38 @@ func (m *ModeSelector) StartAndWaitForCompletion(ctx context.Context) error {
 			return m.shutdownAndReturn(logger, messagesErr)
 		}
 		_, err := fmt.Fprintf(m.osLayer.Stdout(), "%s\n", usage)
-		return m.shutdownAndReturn(logger, err)
+		if err != nil {
+			messagesErr := messages.New_StartupErrors_WriteError_Error("help", err.Error())
+			return m.shutdownAndReturn(logger, messagesErr)
+		}
+		return m.shutdownAndReturn(logger, nil)
 	case config.VersionMode():
 		_, err := fmt.Fprintf(m.osLayer.Stdout(), "%s\n", config.Version())
-		return m.shutdownAndReturn(logger, err)
+		if err != nil {
+			messagesErr := messages.New_StartupErrors_WriteError_Error("version", err.Error())
+			return m.shutdownAndReturn(logger, messagesErr)
+		}
+		return m.shutdownAndReturn(logger, nil)
 	case config.WatchdogMode():
-		return m.watchdogProcess.StartAndWaitForCompletion(ctx)
+		return m.toMessagesError(logger, m.watchdogProcess.StartAndWaitForCompletion(ctx))
 	default:
-		return m.orchestrator.StartAndWaitForCompletion(ctx)
+		return m.toMessagesError(logger, m.orchestrator.StartAndWaitForCompletion(ctx))
 	}
 }
 
-func (m *ModeSelector) shutdownAndReturn(logger entities.Logger, err error) error {
+func (m *ModeSelector) toMessagesError(logger entities.Logger, err error) messages.Error {
+	if err == nil {
+		return nil
+	}
+	var messagesErr messages.Error
+	if errors.As(err, &messagesErr) {
+		return messagesErr
+	}
+	logger.WithError(err).Error("Server failed with unexpected error")
+	return messages.New_StartupErrors_GenericInitializeFailure_Error()
+}
+
+func (m *ModeSelector) shutdownAndReturn(logger entities.Logger, err messages.Error) messages.Error {
 	m.lifecycleSignaler.RequestShutdown()
 	if shutdownErr := m.lifecycleSignaler.WaitForShutdownToComplete(); shutdownErr != nil {
 		logger.WithError(shutdownErr).Warn("Shutdown failed")

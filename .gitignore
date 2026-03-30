@@ -4,3 +4,5 @@
 /.env
 AGENTS.md
 .agents/
+CLAUDE.md
+.claude/
