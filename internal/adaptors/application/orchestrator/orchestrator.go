@@ -53,10 +53,6 @@ type OSSignaler interface {
 	InterruptSignalChan() <-chan os.Signal
 }
 
-type GlobalMATLAB interface {
-	Client(ctx context.Context, logger entities.Logger) (entities.MATLABSessionClient, error)
-}
-
 type DirectoryFactory interface {
 	Directory() (directory.Directory, messages.Error)
 }
@@ -71,7 +67,6 @@ type Orchestrator struct {
 	watchdogClient        WatchdogClient
 	loggerFactory         LoggerFactory
 	osSignaler            OSSignaler
-	globalMATLAB          GlobalMATLAB
 	directoryFactory      DirectoryFactory
 }
 
@@ -84,7 +79,6 @@ func New(
 	watchdogClient WatchdogClient,
 	loggerFactory LoggerFactory,
 	osSignaler OSSignaler,
-	globalMATLAB GlobalMATLAB,
 	directoryFactory DirectoryFactory,
 ) *Orchestrator {
 	orchestrator := &Orchestrator{
@@ -96,7 +90,6 @@ func New(
 		watchdogClient:        watchdogClient,
 		loggerFactory:         loggerFactory,
 		osSignaler:            osSignaler,
-		globalMATLAB:          globalMATLAB,
 		directoryFactory:      directoryFactory,
 	}
 	return orchestrator
@@ -169,14 +162,6 @@ func (o *Orchestrator) StartAndWaitForCompletion(ctx context.Context) error {
 	go func() {
 		serverErrC <- o.server.Run(tools)
 	}()
-
-	matlabFeature := o.applicationDefinition.Features().MATLAB
-	if matlabFeature.Enabled && config.UseSingleMATLABSession() && config.InitializeMATLABOnStartup() {
-		_, err := o.globalMATLAB.Client(ctx, logger)
-		if err != nil {
-			logger.WithError(err).Warn("MATLAB global initialization failed")
-		}
-	}
 
 	logger.Info("Application startup complete")
 

@@ -40,6 +40,8 @@ import (
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/mcp/resources/plaintextlivecodegeneration"
 	server3 "github.com/matlab/matlab-mcp-core-server/internal/adaptors/mcp/server"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/mcp/server/configurator"
+	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/mcp/server/rootpathresolver"
+	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/mcp/server/rootstore"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/mcp/server/sdk"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/mcp/tools"
 	evalmatlabcode2 "github.com/matlab/matlab-mcp-core-server/internal/adaptors/mcp/tools/multisession/evalmatlabcode"
@@ -107,7 +109,7 @@ func Initialize(serverDefinition ApplicationDefinition) *Application {
 	factory2 := server2.NewFactory(serverFactory, loggerFactory, handlerFactory)
 	socketFactory := socket.NewFactory(directoryFactory, osFacade)
 	watchdogWatchdog := watchdog.New(loggerFactory, osFacade, processHandler, processManager, handlerFactory, factory2, socketFactory)
-	sdkFactory := sdk.NewFactory(factory, serverDefinition)
+	rootStore := rootstore.New()
 	fileFacade := filefacade.New()
 	getter := matlabroot.New(osFacade, fileFacade)
 	ioFacade := iofacade.New()
@@ -126,6 +128,11 @@ func Initialize(serverDefinition ApplicationDefinition) *Application {
 	store := matlabsessionstore.New(loggerFactory, lifecycleSignaler)
 	matlabsessionclientFactory := matlabsessionclient.NewFactory(clientFactory)
 	matlabManager := matlabmanager.New(matlabServices, store, matlabsessionclientFactory)
+	matlabRootSelector := matlabrootselector.New(factory, matlabManager)
+	rootPathResolver := rootpathresolver.New(osFacade)
+	matlabStartingDirSelector := matlabstartingdirselector.New(factory, osFacade, rootStore, rootPathResolver)
+	globalMATLAB := globalmatlab.New(matlabManager, matlabRootSelector, matlabStartingDirSelector, factory)
+	sdkFactory := sdk.NewFactory(factory, serverDefinition, rootStore, loggerFactory, globalMATLAB)
 	usecase := listavailablematlabs.New(matlabManager)
 	tool := listavailablematlabs2.New(loggerFactory, usecase)
 	startmatlabsessionUsecase := startmatlabsession.New(matlabManager)
@@ -135,9 +142,6 @@ func Initialize(serverDefinition ApplicationDefinition) *Application {
 	pathValidator := pathvalidator.New(osFacade)
 	evalmatlabcodeUsecase := evalmatlabcode.New(pathValidator)
 	evalmatlabcodeTool := evalmatlabcode2.New(loggerFactory, factory, evalmatlabcodeUsecase, matlabManager)
-	matlabRootSelector := matlabrootselector.New(factory, matlabManager)
-	matlabStartingDirSelector := matlabstartingdirselector.New(factory, osFacade)
-	globalMATLAB := globalmatlab.New(matlabManager, matlabRootSelector, matlabStartingDirSelector, factory)
 	tool2 := evalmatlabcode3.New(loggerFactory, factory, evalmatlabcodeUsecase, globalMATLAB)
 	analyzer := codeanalyzer.New()
 	checkmatlabcodeUsecase := checkmatlabcode.New(pathValidator, analyzer)
@@ -152,7 +156,7 @@ func Initialize(serverDefinition ApplicationDefinition) *Application {
 	plaintextlivecodegenerationResource := plaintextlivecodegeneration.New(loggerFactory)
 	configuratorConfigurator := configurator.New(factory, serverDefinition, tool, startmatlabsessionTool, stopmatlabsessionTool, evalmatlabcodeTool, tool2, checkmatlabcodeTool, detectmatlabtoolboxesTool, runmatlabfileTool, runmatlabtestfileTool, resource, plaintextlivecodegenerationResource)
 	serverServer := server3.New(sdkFactory, loggerFactory, lifecycleSignaler, configuratorConfigurator)
-	orchestratorOrchestrator := orchestrator.New(messageCatalog, lifecycleSignaler, serverDefinition, factory, serverServer, watchdog3, loggerFactory, processManager, globalMATLAB, directoryFactory)
+	orchestratorOrchestrator := orchestrator.New(messageCatalog, lifecycleSignaler, serverDefinition, factory, serverServer, watchdog3, loggerFactory, processManager, directoryFactory)
 	modeSelector := modeselector.New(factory, parserParser, telemetryFactory, watchdogWatchdog, orchestratorOrchestrator, osFacade, lifecycleSignaler, loggerFactory)
 	application := &Application{
 		ModeSelector:        modeSelector,

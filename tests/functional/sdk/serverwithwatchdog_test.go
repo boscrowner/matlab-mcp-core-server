@@ -31,7 +31,7 @@ func TestServerWithWatchdogTestSuite(t *testing.T) {
 
 func (s *ServerWithWatchdogTestSuite) TestSDK_Watchdog_WatchedProcessIsKilledWhenSessionCloses() {
 	// Arrange
-	session := s.CreateSession(s.serverDetails.BinaryLocation(), nil)
+	session := s.CreateSession(s.serverDetails.BinaryLocation(), nil, nil)
 	defer func() {
 		s.Require().NoError(session.Close())
 	}()

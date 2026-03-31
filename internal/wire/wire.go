@@ -40,6 +40,8 @@ import (
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/mcp/resources/plaintextlivecodegeneration"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/mcp/server"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/mcp/server/configurator"
+	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/mcp/server/rootpathresolver"
+	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/mcp/server/rootstore"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/mcp/server/sdk"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/mcp/tools"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/mcp/tools/basetool"
@@ -174,7 +176,6 @@ func Initialize(serverDefinition ApplicationDefinition) *Application {
 		wire.Bind(new(orchestrator.WatchdogClient), new(*watchdogclient.Watchdog)),
 		wire.Bind(new(orchestrator.LoggerFactory), new(*logger.Factory)),
 		wire.Bind(new(orchestrator.OSSignaler), new(*osadaptor.ProcessManager)),
-		wire.Bind(new(orchestrator.GlobalMATLAB), new(*globalmatlab.GlobalMATLAB)),
 		wire.Bind(new(orchestrator.DirectoryFactory), new(*directory.Factory)),
 
 		// MCP Server
@@ -184,10 +185,20 @@ func Initialize(serverDefinition ApplicationDefinition) *Application {
 		wire.Bind(new(server.LifecycleSignaler), new(*lifecyclesignaler.LifecycleSignaler)),
 		wire.Bind(new(server.MCPServerConfigurator), new(*configurator.Configurator)),
 
+		// RootStore
+		rootstore.New,
+
+		// Root Path Resolver
+		rootpathresolver.New,
+		wire.Bind(new(rootpathresolver.OSLayer), new(*osfacade.OsFacade)),
+
 		// MCP Server (SDK)
 		sdk.NewFactory,
 		wire.Bind(new(sdk.ConfigFactory), new(*config.Factory)),
 		wire.Bind(new(sdk.Definition), new(ApplicationDefinition)),
+		wire.Bind(new(sdk.RootStore), new(*rootstore.RootStore)),
+		wire.Bind(new(sdk.LoggerFactory), new(*logger.Factory)),
+		wire.Bind(new(sdk.GlobalMATLAB), new(*globalmatlab.GlobalMATLAB)),
 
 		// MCP Server Configurator
 		configurator.New,
@@ -293,6 +304,8 @@ func Initialize(serverDefinition ApplicationDefinition) *Application {
 		matlabstartingdirselector.New,
 		wire.Bind(new(matlabstartingdirselector.ConfigFactory), new(*config.Factory)),
 		wire.Bind(new(matlabstartingdirselector.OSLayer), new(*osfacade.OsFacade)),
+		wire.Bind(new(matlabstartingdirselector.RootStore), new(*rootstore.RootStore)),
+		wire.Bind(new(matlabstartingdirselector.RootPathResolver), new(*rootpathresolver.RootPathResolver)),
 
 		// Entities
 		wire.Bind(new(entities.GlobalMATLAB), new(*globalmatlab.GlobalMATLAB)),
