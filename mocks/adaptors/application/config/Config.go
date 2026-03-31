@@ -171,6 +171,50 @@ func (_c *MockConfig_DisableTelemetry_Call) RunAndReturn(run func() bool) *MockC
 	return _c
 }
 
+// EmbeddedConnectorDetailsTimeout provides a mock function for the type MockConfig
+func (_mock *MockConfig) EmbeddedConnectorDetailsTimeout() time.Duration {
+	ret := _mock.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for EmbeddedConnectorDetailsTimeout")
+	}
+
+	var r0 time.Duration
+	if returnFunc, ok := ret.Get(0).(func() time.Duration); ok {
+		r0 = returnFunc()
+	} else {
+		r0 = ret.Get(0).(time.Duration)
+	}
+	return r0
+}
+
+// MockConfig_EmbeddedConnectorDetailsTimeout_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'EmbeddedConnectorDetailsTimeout'
+type MockConfig_EmbeddedConnectorDetailsTimeout_Call struct {
+	*mock.Call
+}
+
+// EmbeddedConnectorDetailsTimeout is a helper method to define mock.On call
+func (_e *MockConfig_Expecter) EmbeddedConnectorDetailsTimeout() *MockConfig_EmbeddedConnectorDetailsTimeout_Call {
+	return &MockConfig_EmbeddedConnectorDetailsTimeout_Call{Call: _e.mock.On("EmbeddedConnectorDetailsTimeout")}
+}
+
+func (_c *MockConfig_EmbeddedConnectorDetailsTimeout_Call) Run(run func()) *MockConfig_EmbeddedConnectorDetailsTimeout_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockConfig_EmbeddedConnectorDetailsTimeout_Call) Return(duration time.Duration) *MockConfig_EmbeddedConnectorDetailsTimeout_Call {
+	_c.Call.Return(duration)
+	return _c
+}
+
+func (_c *MockConfig_EmbeddedConnectorDetailsTimeout_Call) RunAndReturn(run func() time.Duration) *MockConfig_EmbeddedConnectorDetailsTimeout_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Get provides a mock function for the type MockConfig
 func (_mock *MockConfig) Get(key string) (any, messages.Error) {
 	ret := _mock.Called(key)

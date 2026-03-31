@@ -116,7 +116,7 @@ func Initialize(serverDefinition ApplicationDefinition) *Application {
 	matlabversionGetter := matlabversion.New(osFacade, ioFacade)
 	matlabLocator := matlablocator.New(getter, matlabversionGetter)
 	matlabFiles := matlabfiles.New()
-	factory3 := directory2.NewFactory(osFacade, directoryFactory, matlabFiles)
+	factory3 := directory2.NewFactory(osFacade, directoryFactory, matlabFiles, factory)
 	processDetails := processdetails.New(osFacade)
 	matlabProcessLauncher := processlauncher.New()
 	processFactory := process.New(osFacade, loggerFactory, directoryFactory, factory)
@@ -159,12 +159,13 @@ func Initialize(serverDefinition ApplicationDefinition) *Application {
 	orchestratorOrchestrator := orchestrator.New(messageCatalog, lifecycleSignaler, serverDefinition, factory, serverServer, watchdog3, loggerFactory, processManager, directoryFactory)
 	modeSelector := modeselector.New(factory, parserParser, telemetryFactory, watchdogWatchdog, orchestratorOrchestrator, osFacade, lifecycleSignaler, loggerFactory)
 	application := &Application{
-		ModeSelector:        modeSelector,
-		MessageCatalog:      messageCatalog,
-		MATLABClientFactory: matlabsessionclientFactory,
-		HTTPClientFactory:   clientFactory,
-		HTTPServerFactory:   serverFactory,
-		LoggerFactory:       loggerFactory,
+		ModeSelector:              modeSelector,
+		MessageCatalog:            messageCatalog,
+		MATLABClientFactory:       matlabsessionclientFactory,
+		HTTPClientFactory:         clientFactory,
+		HTTPServerFactory:         serverFactory,
+		LoggerFactory:             loggerFactory,
+		LocalMATLABSessionStarter: starter,
 	}
 	return application
 }
@@ -178,6 +179,8 @@ type Application struct {
 	HTTPClientFactory   *client.Factory
 	HTTPServerFactory   *server.Factory
 	LoggerFactory       *logger.Factory
+	// Exposed for integration testing
+	LocalMATLABSessionStarter *localmatlabsession.Starter
 }
 
 type ApplicationDefinition interface {

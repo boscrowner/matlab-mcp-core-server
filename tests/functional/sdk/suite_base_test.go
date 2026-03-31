@@ -89,11 +89,7 @@ type SDKTestSuite struct {
 // Usage:
 //
 //	session := s.CreateSession(serverPath, nil, nil)
-//	defer func() {
-//		s.NoError(session.Close(), "closing session should not error")
-//		s.AssertNoErrorLogs(session)
-//		session.DumpLogsOnFailure(s.T())
-//	}()
+//	defer s.CleanupSession(session, true)
 func (s *SDKTestSuite) CreateSession(serverPath string, env []string, sessionOpts []mcpclient.CreateSessionOption, args ...string) *SDKSession {
 	s.T().Helper()
 	hasLogLevel := false
@@ -146,4 +142,13 @@ func (s *SDKTestSuite) AssertNoErrorLogs(session *SDKSession) {
 	errorLogs, err := serverlogs.ReadErrorLogs(session.LogFS())
 	s.NoError(err) //nolint:testifylint // assert in defer to avoid FailNow
 	s.Empty(errorLogs, "unexpected ERROR logs in server logs")
+}
+
+func (s *SDKTestSuite) CleanupSession(session *SDKSession, assertNoErrorLogs bool) {
+	s.T().Helper()
+	s.NoError(session.Close(), "closing session should not error") //nolint:testifylint // assert in defer to avoid FailNow
+	if assertNoErrorLogs {
+		s.AssertNoErrorLogs(session)
+	}
+	session.DumpLogsOnFailure(s.T())
 }

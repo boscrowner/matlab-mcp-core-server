@@ -39,13 +39,13 @@ type Starter struct {
 
 func NewStarter(
 	directoryFactory SessionDirectoryFactory,
-	procesDetails ProcessDetails,
+	processDetails ProcessDetails,
 	matlabProcessLauncher MATLABProcessLauncher,
 	watchdog Watchdog,
 ) *Starter {
 	return &Starter{
 		directoryFactory:      directoryFactory,
-		processDetails:        procesDetails,
+		processDetails:        processDetails,
 		matlabProcessLauncher: matlabProcessLauncher,
 		watchdog:              watchdog,
 	}
@@ -83,7 +83,17 @@ func (m *Starter) StartLocalMATLABSession(ctx context.Context, logger entities.L
 
 	processID, processCleanup, _, err := m.matlabProcessLauncher.Launch(ctx, logger, sessionDirPath, request.MATLABRoot, request.StartingDirectory, startupFlags, env)
 	if err != nil {
+		if cleanupErr := sessionDir.Cleanup(); cleanupErr != nil {
+			logger.WithError(cleanupErr).Warn("Failed to cleanup session directory after launch error")
+		}
 		return embeddedconnector.ConnectionDetails{}, nil, err
+	}
+
+	cleanup := func() error {
+		if processCleanup != nil {
+			processCleanup()
+		}
+		return sessionDir.Cleanup()
 	}
 
 	if err = m.watchdog.RegisterProcessPIDWithWatchdog(processID); err != nil {
@@ -92,16 +102,16 @@ func (m *Starter) StartLocalMATLABSession(ctx context.Context, logger entities.L
 
 	securePort, certificatePEM, err := sessionDir.GetEmbeddedConnectorDetails()
 	if err != nil {
+		if cleanupErr := cleanup(); cleanupErr != nil {
+			logger.WithError(cleanupErr).Warn("Failed to cleanup after startup error")
+		}
 		return embeddedconnector.ConnectionDetails{}, nil, err
 	}
 
 	return embeddedconnector.ConnectionDetails{
-			Host:           "localhost",
-			Port:           securePort,
-			APIKey:         uniqueAPIKey,
-			CertificatePEM: certificatePEM,
-		}, func() error {
-			processCleanup()
-			return sessionDir.Cleanup()
-		}, nil
+		Host:           "localhost",
+		Port:           securePort,
+		APIKey:         uniqueAPIKey,
+		CertificatePEM: certificatePEM,
+	}, cleanup, nil
 }

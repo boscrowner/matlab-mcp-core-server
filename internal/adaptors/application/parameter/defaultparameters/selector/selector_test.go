@@ -22,18 +22,54 @@ func TestSelector_DefaultParameters_DescriptionsResolved(t *testing.T) {
 	mockMessageCatalog := &selectormocks.MockMessageCatalog{}
 	defer mockMessageCatalog.AssertExpectations(t)
 
-	expectedDescriptions := map[messages.MessageKey]string{
-		messages.CLIMessages_HelpDescription:                             "Help description",
-		messages.CLIMessages_VersionDescription:                          "Version description",
-		messages.CLIMessages_DisableTelemetryDescription:                 "Disable telemetry description",
-		messages.CLIMessages_BaseDirDescription:                          "Base dir description",
-		messages.CLIMessages_LogLevelDescription:                         "Log level description",
-		messages.CLIMessages_InternalUseDescription:                      "Internal use description",
-		messages.CLIMessages_PreferredLocalMATLABRootDescription:         "MATLAB root description",
-		messages.CLIMessages_PreferredMATLABStartingDirectoryDescription: "MATLAB starting directory description",
-		messages.CLIMessages_UseSingleMATLABSessionDescription:           "Single MATLAB session description",
-		messages.CLIMessages_InitializeMATLABOnStartupDescription:        "Initialize MATLAB on startup description",
-		messages.CLIMessages_DisplayModeDescription:                      "Display mode description",
+	expectedDescriptions := map[messages.MessageKey]struct {
+		description string
+		times       int
+	}{
+		messages.CLIMessages_HelpDescription: {
+			description: "Help description",
+			times:       1,
+		},
+		messages.CLIMessages_VersionDescription: {
+			description: "Version description",
+			times:       1,
+		},
+		messages.CLIMessages_DisableTelemetryDescription: {
+			description: "Disable telemetry description",
+			times:       1,
+		},
+		messages.CLIMessages_BaseDirDescription: {
+			description: "Base dir description",
+			times:       1,
+		},
+		messages.CLIMessages_LogLevelDescription: {
+			description: "Log level description",
+			times:       1,
+		},
+		messages.CLIMessages_InternalUseDescription: {
+			description: "Internal use description",
+			times:       6,
+		},
+		messages.CLIMessages_PreferredLocalMATLABRootDescription: {
+			description: "MATLAB root description",
+			times:       1,
+		},
+		messages.CLIMessages_PreferredMATLABStartingDirectoryDescription: {
+			description: "MATLAB starting directory description",
+			times:       1,
+		},
+		messages.CLIMessages_UseSingleMATLABSessionDescription: {
+			description: "Single MATLAB session description",
+			times:       1,
+		},
+		messages.CLIMessages_InitializeMATLABOnStartupDescription: {
+			description: "Initialize MATLAB on startup description",
+			times:       1,
+		},
+		messages.CLIMessages_DisplayModeDescription: {
+			description: "Display mode description",
+			times:       1,
+		},
 	}
 
 	mockAppDef.EXPECT().
@@ -41,16 +77,11 @@ func TestSelector_DefaultParameters_DescriptionsResolved(t *testing.T) {
 		Return(definition.Features{}).
 		Once()
 
-	for key, description := range expectedDescriptions {
-		times := 1
-		if key == messages.CLIMessages_InternalUseDescription {
-			times = 5
-		}
-
+	for key, expected := range expectedDescriptions {
 		mockMessageCatalog.EXPECT().
 			Get(key).
-			Return(description).
-			Times(times)
+			Return(expected.description).
+			Times(expected.times)
 	}
 
 	sut := selector.New(mockAppDef, mockMessageCatalog)
@@ -87,7 +118,7 @@ func TestSelector_DefaultParameters_MATLABEnabled(t *testing.T) {
 	parameters := sut.DefaultParameters()
 
 	// Assert
-	assert.Len(t, parameters, 15)
+	assert.Len(t, parameters, 16)
 
 	for _, p := range parameters {
 		assert.True(t, p.GetActive(), "parameter %s should be active", p.GetID())
@@ -102,7 +133,7 @@ func TestSelector_DefaultParameters_MATLABDisabled(t *testing.T) {
 	mockMessageCatalog := &selectormocks.MockMessageCatalog{}
 	defer mockMessageCatalog.AssertExpectations(t)
 
-	commonParameterIDs := map[string]bool{
+	expectedActiveStateByParameterID := map[string]bool{
 		"HelpMode":                           true,
 		"VersionMode":                        true,
 		"DisableTelemetry":                   true,
@@ -113,14 +144,12 @@ func TestSelector_DefaultParameters_MATLABDisabled(t *testing.T) {
 		"TelemetryCollectorEndpoint":         true,
 		"TelemetryCollectionInterval":        true,
 		"TelemetryCollectorEndpointInsecure": true,
-	}
-
-	matlabParameterIDs := map[string]bool{
-		"PreferredLocalMATLABRoot":         true,
-		"PreferredMATLABStartingDirectory": true,
-		"UseSingleMATLABSession":           true,
-		"InitializeMATLABOnStartup":        true,
-		"MATLABDisplayMode":                true,
+		"PreferredLocalMATLABRoot":           false,
+		"PreferredMATLABStartingDirectory":   false,
+		"UseSingleMATLABSession":             false,
+		"InitializeMATLABOnStartup":          false,
+		"MATLABDisplayMode":                  false,
+		"EmbeddedConnectorDetailsTimeout":    false,
 	}
 
 	mockAppDef.EXPECT().
@@ -138,14 +167,11 @@ func TestSelector_DefaultParameters_MATLABDisabled(t *testing.T) {
 	parameters := sut.DefaultParameters()
 
 	// Assert
-	assert.Len(t, parameters, 15)
+	assert.Len(t, parameters, 16)
 
 	for _, p := range parameters {
-		if commonParameterIDs[p.GetID()] {
-			assert.True(t, p.GetActive(), "common parameter %s should be active", p.GetID())
-		}
-		if matlabParameterIDs[p.GetID()] {
-			assert.False(t, p.GetActive(), "MATLAB parameter %s should be inactive", p.GetID())
-		}
+		expectedState, exists := expectedActiveStateByParameterID[p.GetID()]
+		assert.True(t, exists, "unexpected parameter %s", p.GetID())
+		assert.Equal(t, expectedState, p.GetActive(), "unexpected active state for parameter %s", p.GetID())
 	}
 }

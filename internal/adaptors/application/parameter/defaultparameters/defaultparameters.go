@@ -203,3 +203,16 @@ func TelemetryCollectorEndpointInsecure() *parameter.Parameter[bool] {
 		true,
 	)
 }
+
+func EmbeddedConnectorDetailsTimeout() *parameter.Parameter[string] {
+	return parameter.NewParameter(
+		"EmbeddedConnectorDetailsTimeout",
+		"",
+		true,
+		"MW_MCP_SERVER_EMBEDDED_CONNECTOR_DETAILS_TIMEOUT",
+		messages.CLIMessages_InternalUseDescription,
+		"10m",
+		false,
+		true,
+	)
+}

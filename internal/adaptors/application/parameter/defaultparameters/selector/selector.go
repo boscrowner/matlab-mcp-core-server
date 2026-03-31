@@ -53,6 +53,7 @@ func (s *Selector) DefaultParameters() []entities.Parameter {
 		defaultparameters.UseSingleMATLABSession(),
 		defaultparameters.InitializeMATLABOnStartup(),
 		defaultparameters.MATLABDisplayMode(),
+		defaultparameters.EmbeddedConnectorDetailsTimeout(),
 	}
 
 	matlabFeature := s.applicationDefinition.Features().MATLAB

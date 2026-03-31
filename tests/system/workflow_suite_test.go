@@ -57,11 +57,7 @@ func (s *WorkflowTestSuite) TestInteractiveDevelopmentWorkflow() {
 		mcpclient.WithRoots(&mcp.Root{URI: testDataURI, Name: "test-data"}),
 	}
 	session := s.CreateMCPSession(ctx, nil, sessionOpts)
-	defer func() {
-		s.NoError(session.Close(), "closing session should not error") //nolint:testifylint // assert in defer to avoid FailNow
-		s.AssertNoErrorLogs(session)
-		session.DumpLogsOnFailure(s.T())
-	}()
+	defer s.CleanupSession(session, true)
 
 	// Step 1: Read coding guidelines (AI references standards before writing code)
 	guidelines, err := session.ReadResource(ctx, "guidelines://coding")
@@ -156,11 +152,7 @@ func (s *WorkflowTestSuite) TestInteractiveDevelopmentWorkflow() {
 func (s *WorkflowTestSuite) TestParallelExperimentationWorkflow() {
 	ctx := s.T().Context()
 	mcpSession := s.CreateMCPSession(ctx, nil, nil, "--use-single-matlab-session=false")
-	defer func() {
-		s.NoError(mcpSession.Close(), "closing MCP session should not error") //nolint:testifylint // assert in defer to avoid FailNow
-		s.AssertNoErrorLogs(mcpSession)
-		mcpSession.DumpLogsOnFailure(s.T())
-	}()
+	defer s.CleanupSession(mcpSession, true)
 
 	sm := mcpSession.NewSessionManager()
 

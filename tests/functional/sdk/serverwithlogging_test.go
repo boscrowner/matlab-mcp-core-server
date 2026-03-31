@@ -40,10 +40,7 @@ func (s *ServerWithLoggingTestSuite) TestSDK_Logging_DependenciesAndToolsProvide
 
 	// This suite intentionally verifies logging behavior and may emit ERROR logs.
 	session := s.CreateSession(s.serverDetails.BinaryLocation(), nil, nil, "--log-folder="+logFolder)
-	defer func() {
-		s.NoError(session.Close(), "closing session should not error") //nolint:testifylint // assert in defer to avoid FailNow
-		session.DumpLogsOnFailure(s.T())
-	}()
+	defer s.CleanupSession(session, false)
 
 	// Act
 	_, err = session.CallTool(s.T().Context(), s.serverDetails.ToolThatLogsName(), map[string]any{"name": "World"})
@@ -80,10 +77,7 @@ func (s *ServerWithLoggingTestSuite) TestSDK_Logging_ToolHandlerLogsToFile() {
 
 	// This suite intentionally verifies logging behavior and may emit ERROR logs.
 	session := s.CreateSession(s.serverDetails.BinaryLocation(), nil, nil, "--log-folder="+logFolder)
-	defer func() {
-		s.NoError(session.Close(), "closing session should not error") //nolint:testifylint // assert in defer to avoid FailNow
-		session.DumpLogsOnFailure(s.T())
-	}()
+	defer s.CleanupSession(session, false)
 
 	// Act
 	_, err = session.CallTool(s.T().Context(), s.serverDetails.ToolThatLogsName(), map[string]any{"name": name})

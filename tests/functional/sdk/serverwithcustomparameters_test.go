@@ -43,11 +43,7 @@ func (s *ServerWithCustomParametersTestSuite) TestSDK_CustomParameter_HappyPath(
 		"--"+s.serverDetails.CustomParamFlagName()+"="+expectedValue,
 		"--"+s.serverDetails.CustomRecordedParamFlagName()+"="+expectedRecordedValue,
 	)
-	defer func() {
-		s.NoError(session.Close(), "closing session should not error") //nolint:testifylint // assert in defer to avoid FailNow
-		s.AssertNoErrorLogs(session)
-		session.DumpLogsOnFailure(s.T())
-	}()
+	defer s.CleanupSession(session, true)
 
 	// Check for unstructured content output tool
 	result, err := session.CallTool(s.T().Context(), s.serverDetails.GreetToolName(), map[string]any{"name": "World"})
@@ -91,11 +87,7 @@ func (s *ServerWithCustomParametersTestSuite) TestSDK_CustomParameter_Recorded_B
 
 	env := append(os.Environ(), s.serverDetails.CustomRecordedParamEnvVar()+"="+expectedRecordedValue)
 	session := s.CreateSession(s.serverDetails.BinaryLocation(), env, nil)
-	defer func() {
-		s.NoError(session.Close(), "closing session should not error") //nolint:testifylint // assert in defer to avoid FailNow
-		s.AssertNoErrorLogs(session)
-		session.DumpLogsOnFailure(s.T())
-	}()
+	defer s.CleanupSession(session, true)
 
 	// Check that the log features the custom parameter values
 	anyCharacterButNewLines := `[^\n]+`

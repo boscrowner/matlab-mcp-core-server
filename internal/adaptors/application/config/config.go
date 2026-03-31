@@ -27,8 +27,9 @@ type validatedArguments struct {
 	preferredMATLABStartingDirectory string
 	displayMode                      entities.DisplayMode
 
-	baseDirectory    string
-	serverInstanceID string
+	baseDirectory                   string
+	serverInstanceID                string
+	embeddedConnectorDetailsTimeout time.Duration
 
 	disableTelemetry                   bool
 	telemetryCollectorEndpoint         string
@@ -134,6 +135,10 @@ func (c *config) BaseDir() string {
 
 func (c *config) ServerInstanceID() string {
 	return c.serverInstanceID
+}
+
+func (c *config) EmbeddedConnectorDetailsTimeout() time.Duration {
+	return c.embeddedConnectorDetailsTimeout
 }
 
 func (c *config) DisableTelemetry() bool {
@@ -266,6 +271,18 @@ func validateArguments(rawCfg *rawConfig) (validatedArguments, messages.Error) {
 		return validatedArguments{}, err
 	}
 
+	rawEmbeddedConnectorDetailsTimeout, err := get(rawCfg, defaultparameters.EmbeddedConnectorDetailsTimeout())
+	if err != nil {
+		return validatedArguments{}, err
+	}
+	embeddedConnectorDetailsTimeout, parseErr := time.ParseDuration(rawEmbeddedConnectorDetailsTimeout)
+	if parseErr != nil || embeddedConnectorDetailsTimeout <= 0 {
+		return validatedArguments{}, messages.New_StartupErrors_BadValueForEnvVar_Error(
+			rawEmbeddedConnectorDetailsTimeout,
+			defaultparameters.EmbeddedConnectorDetailsTimeout().GetEnvVarName(),
+		)
+	}
+
 	telemetryCollectorEndpoint, err := get(rawCfg, defaultparameters.TelemetryCollectorEndpoint())
 	if err != nil {
 		return validatedArguments{}, err
@@ -299,8 +316,9 @@ func validateArguments(rawCfg *rawConfig) (validatedArguments, messages.Error) {
 		preferredMATLABStartingDirectory: preferredMATLABStartingDirectory,
 		displayMode:                      entities.DisplayMode(displayMode),
 
-		baseDirectory:    baseDirectory,
-		serverInstanceID: serverInstanceID,
+		baseDirectory:                   baseDirectory,
+		serverInstanceID:                serverInstanceID,
+		embeddedConnectorDetailsTimeout: embeddedConnectorDetailsTimeout,
 
 		telemetryCollectorEndpoint:         telemetryCollectorEndpoint,
 		telemetryCollectionInterval:        telemetryCollectionInterval,

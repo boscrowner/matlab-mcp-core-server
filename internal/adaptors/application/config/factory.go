@@ -42,6 +42,7 @@ type Config interface {
 	PreferredLocalMATLABRoot() string
 	PreferredMATLABStartingDirectory() string
 	ShouldShowMATLABDesktop() bool
+	EmbeddedConnectorDetailsTimeout() time.Duration
 
 	// Telemetry
 	DisableTelemetry() bool

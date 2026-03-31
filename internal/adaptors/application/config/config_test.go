@@ -32,6 +32,7 @@ func defaultParameters() []entities.Parameter {
 		defaultparameters.ServerInstanceID(),
 		defaultparameters.InitializeMATLABOnStartup(),
 		defaultparameters.MATLABDisplayMode(),
+		defaultparameters.EmbeddedConnectorDetailsTimeout(),
 		defaultparameters.TelemetryCollectorEndpoint(),
 		defaultparameters.TelemetryCollectionInterval(),
 		defaultparameters.TelemetryCollectorEndpointInsecure(),
@@ -65,6 +66,7 @@ func TestNewConfig_InvalidParameterType(t *testing.T) {
 		{name: "WatchdogMode wrong type", key: defaultparameters.WatchdogMode().GetID(), invalidValue: "false", expectedType: "bool"},
 		{name: "ServerInstanceID wrong type", key: defaultparameters.ServerInstanceID().GetID(), invalidValue: 123, expectedType: "string"},
 		{name: "MATLABDisplayMode wrong type", key: defaultparameters.MATLABDisplayMode().GetID(), invalidValue: 123, expectedType: "string"},
+		{name: "EmbeddedConnectorDetailsTimeout wrong type", key: defaultparameters.EmbeddedConnectorDetailsTimeout().GetID(), invalidValue: 123, expectedType: "string"},
 		{name: "TelemetryCollectorEndpoint wrong type", key: defaultparameters.TelemetryCollectorEndpoint().GetID(), invalidValue: 123, expectedType: "string"},
 		{name: "TelemetryCollectionInterval wrong type", key: defaultparameters.TelemetryCollectionInterval().GetID(), invalidValue: "1m", expectedType: "time.Duration"},
 		{name: "TelemetryCollectorEndpointInsecure wrong type", key: defaultparameters.TelemetryCollectorEndpointInsecure().GetID(), invalidValue: "false", expectedType: "bool"},
@@ -127,6 +129,7 @@ func TestNewConfig_MissingParameter(t *testing.T) {
 		{name: "missing WatchdogMode", missingKey: defaultparameters.WatchdogMode().GetID()},
 		{name: "missing ServerInstanceID", missingKey: defaultparameters.ServerInstanceID().GetID()},
 		{name: "missing MATLABDisplayMode", missingKey: defaultparameters.MATLABDisplayMode().GetID()},
+		{name: "missing EmbeddedConnectorDetailsTimeout", missingKey: defaultparameters.EmbeddedConnectorDetailsTimeout().GetID()},
 		{name: "missing TelemetryCollectorEndpoint", missingKey: defaultparameters.TelemetryCollectorEndpoint().GetID()},
 		{name: "missing TelemetryCollectionInterval", missingKey: defaultparameters.TelemetryCollectionInterval().GetID()},
 		{name: "missing TelemetryCollectorEndpointInsecure", missingKey: defaultparameters.TelemetryCollectorEndpointInsecure().GetID()},
@@ -239,6 +242,52 @@ func TestNewConfig_InvalidLogLevel(t *testing.T) {
 	// Assert
 	require.Equal(t, expectedError, err)
 	assert.Nil(t, cfg, "Config should be nil")
+}
+
+func TestNewConfig_InvalidEmbeddedConnectorDetailsTimeout(t *testing.T) {
+	testCases := []string{"not-a-duration", "0s", "-1s"}
+
+	for _, timeoutValue := range testCases {
+		t.Run(timeoutValue, func(t *testing.T) {
+			// Arrange
+			mockOSLayer := &configmocks.MockOSLayer{}
+			defer mockOSLayer.AssertExpectations(t)
+
+			mockParser := &configmocks.MockParser{}
+			defer mockParser.AssertExpectations(t)
+
+			mockBuildInfo := &configmocks.MockBuildInfo{}
+			defer mockBuildInfo.AssertExpectations(t)
+
+			programName := "testprocess"
+			args := []string{programName}
+
+			parsedArgs := configDefaultParsedArgs()
+			parsedArgs[defaultparameters.EmbeddedConnectorDetailsTimeout().GetID()] = timeoutValue
+
+			mockOSLayer.EXPECT().
+				Args().
+				Return(args).
+				Once()
+
+			mockParser.EXPECT().
+				Parse(args[1:]).
+				Return([]entities.Parameter{}, parsedArgs, []string{}, nil).
+				Once()
+
+			expectedError := messages.New_StartupErrors_BadValueForEnvVar_Error(
+				timeoutValue,
+				defaultparameters.EmbeddedConnectorDetailsTimeout().GetEnvVarName(),
+			)
+
+			// Act
+			cfg, err := config.NewConfig(mockOSLayer, mockParser, mockBuildInfo)
+
+			// Assert
+			require.Equal(t, expectedError, err)
+			assert.Nil(t, cfg)
+		})
+	}
 }
 
 func TestConfig_Version_HappyPath(t *testing.T) {

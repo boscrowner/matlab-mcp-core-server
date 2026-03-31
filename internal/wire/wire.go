@@ -91,6 +91,8 @@ type Application struct {
 	HTTPClientFactory   *httpclient.Factory
 	HTTPServerFactory   *httpserver.Factory
 	LoggerFactory       *logger.Factory
+	// Exposed for integration testing
+	LocalMATLABSessionStarter *localmatlabsession.Starter
 }
 
 type ApplicationDefinition interface {
@@ -349,6 +351,7 @@ func Initialize(serverDefinition ApplicationDefinition) *Application {
 		wire.Bind(new(localmatlabsessiondirectory.OSLayer), new(*osfacade.OsFacade)),
 		wire.Bind(new(localmatlabsessiondirectory.ApplicationDirectoryFactory), new(*directory.Factory)),
 		wire.Bind(new(localmatlabsessiondirectory.MATLABFiles), new(matlabfiles.MATLABFiles)),
+		wire.Bind(new(localmatlabsessiondirectory.ConfigFactory), new(*config.Factory)),
 
 		// MATLAB Files Provider
 		matlabfiles.New,

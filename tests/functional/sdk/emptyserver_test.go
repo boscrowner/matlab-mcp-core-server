@@ -46,7 +46,7 @@ func (s *EmptyServerTestSuite) TestSDK_EmptyServer_HasNoMATLABFlags() {
 		"--initialize-matlab-on-startup",
 		"--matlab-display-mode=desktop",
 	} {
-		s.T().Run(flag, func(t *testing.T) {
+		s.Run(flag, func() {
 			// Arrange
 
 			// Act
@@ -63,11 +63,7 @@ func (s *EmptyServerTestSuite) TestSDK_EmptyServer_HasNoMATLABFlags() {
 func (s *EmptyServerTestSuite) TestSDK_EmptyServer_NameTitleAndInstructionNoToolsAndNoResources() {
 	// Arrange
 	session := s.CreateSession(s.serverDetails.BinaryLocation(), nil, nil)
-	defer func() {
-		s.NoError(session.Close(), "closing session should not error") //nolint:testifylint // assert in defer to avoid FailNow
-		s.AssertNoErrorLogs(session)
-		session.DumpLogsOnFailure(s.T())
-	}()
+	defer s.CleanupSession(session, true)
 
 	// Act
 	result := session.InitializeResult()

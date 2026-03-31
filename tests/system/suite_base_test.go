@@ -156,10 +156,7 @@ func (s *SystemTestSuite) SetupTest() {
 // Usage:
 //
 //	session := s.CreateMCPSession(ctx, nil, nil)
-//	defer func() {
-//		s.NoError(session.Close()) // assert in defer to avoid short-circuiting log dump
-//		session.DumpLogsOnFailure(s.T())
-//	}()
+//	defer s.CleanupSession(session, true)
 //
 // If env is nil, the suite's defaultEnv is used.
 func (s *SystemTestSuite) CreateMCPSession(ctx context.Context, env []string, sessionOpts []mcpclient.CreateSessionOption, args ...string) *SystemSession {
@@ -208,6 +205,15 @@ func (s *SystemTestSuite) CreateMCPSession(ctx context.Context, env []string, se
 		logDir:           logFolderLocation,
 		logFS:            os.DirFS(logFolderLocation),
 	}
+}
+
+func (s *SystemTestSuite) CleanupSession(session *SystemSession, assertNoErrorLogs bool) {
+	s.T().Helper()
+	s.NoError(session.Close(), "closing session should not error") //nolint:testifylint // assert in defer to avoid FailNow
+	if assertNoErrorLogs {
+		s.AssertNoErrorLogs(session)
+	}
+	session.DumpLogsOnFailure(s.T())
 }
 
 // Test file paths
