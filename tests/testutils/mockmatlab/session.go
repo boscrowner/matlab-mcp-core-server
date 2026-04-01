@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/matlabmanager/matlabsessionclient/embeddedconnector"
+	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/time/retry"
 	"github.com/matlab/matlab-mcp-core-server/tests/testutils/mockmatlab/mockruntime"
 )
 
@@ -95,33 +96,31 @@ func (s *Session) WaitForReady(ctx context.Context) (embeddedconnector.Connectio
 	portPath := filepath.Join(s.SessionDir, securePortFile)
 	certPath := filepath.Join(s.SessionDir, certificateFile)
 
-	deadline := time.After(defaultReadyTimeout)
-	tick := time.NewTicker(defaultReadyPoll)
-	defer tick.Stop()
+	ctx, cancel := context.WithTimeout(ctx, defaultReadyTimeout)
+	defer cancel()
 
-	for {
-		select {
-		case <-ctx.Done():
-			return embeddedconnector.ConnectionDetails{}, ctx.Err()
-		case <-deadline:
-			return embeddedconnector.ConnectionDetails{}, fmt.Errorf("timeout waiting for mock MATLAB to become ready")
-		case <-tick.C:
-			port, err := readNonEmptyFile(portPath)
-			if err != nil {
-				continue
-			}
-			certPEM, err := readNonEmptyFile(certPath)
-			if err != nil {
-				continue
-			}
-			return embeddedconnector.ConnectionDetails{
-				Host:           "localhost",
-				Port:           string(port),
-				APIKey:         s.APIKey,
-				CertificatePEM: certPEM,
-			}, nil
+	details, err := retry.Retry(ctx, func() (embeddedconnector.ConnectionDetails, bool, error) {
+		port, readErr := readNonEmptyFile(portPath)
+		if readErr != nil {
+			return embeddedconnector.ConnectionDetails{}, false, nil
 		}
+		certPEM, readErr := readNonEmptyFile(certPath)
+		if readErr != nil {
+			return embeddedconnector.ConnectionDetails{}, false, nil
+		}
+		return embeddedconnector.ConnectionDetails{
+			Host:           "localhost",
+			Port:           string(port),
+			APIKey:         s.APIKey,
+			CertificatePEM: certPEM,
+		}, true, nil
+	}, retry.NewLinearRetryStrategy(defaultReadyPoll))
+
+	if err != nil {
+		return embeddedconnector.ConnectionDetails{}, fmt.Errorf("timeout waiting for mock MATLAB to become ready")
 	}
+
+	return details, nil
 }
 
 func (s *Session) Stop() error {
