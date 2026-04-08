@@ -2,6 +2,11 @@
 REM Copyright 2026 The MathWorks, Inc.
 setlocal enabledelayedexpansion
 set BIN=%~dp0matlab-mcp-core-server-win64.exe
+if defined MW_CONTEXT_TAGS (
+    set "MW_CONTEXT_TAGS=%MW_CONTEXT_TAGS%,MATLAB:MCPB:V1"
+) else (
+    set "MW_CONTEXT_TAGS=MATLAB:MCPB:V1"
+)
 REM Env var to CLI flag mappings (format: ENV_VAR:type:flag)
 REM Types: string = pass value if non-empty, bool = pass flag if "true"
 set ARGS=

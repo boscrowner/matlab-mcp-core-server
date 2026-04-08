@@ -25,6 +25,8 @@ if [[ ! -x "$BIN" ]]; then
   exit 1
 fi
 
+export MW_CONTEXT_TAGS="${MW_CONTEXT_TAGS:+$MW_CONTEXT_TAGS,}MATLAB:MCPB:V1"
+
 # Env var to CLI flag mappings (format: ENV_VAR:type:flag)
 # Types: string = pass value if non-empty, bool = pass flag if "true"
 MCPB_MAPPINGS=(

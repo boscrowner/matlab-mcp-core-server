@@ -94,6 +94,30 @@ func TestBuild_ManifestPreservesTemplateFields(t *testing.T) {
 	assert.NotEmpty(t, mcpConfig["platform_overrides"])
 }
 
+func TestBuild_LaunchersSetMCPBContextTags(t *testing.T) {
+	// Arrange
+	stagingDir := filepath.Join(t.TempDir(), "staging")
+	t.Setenv("MCPB_STAGING_DIR", stagingDir)
+
+	expectedShellTag := "export MW_CONTEXT_TAGS=\"${MW_CONTEXT_TAGS:+$MW_CONTEXT_TAGS,}MATLAB:MCPB:V1\""
+	expectedCmdTagWithExisting := "set \"MW_CONTEXT_TAGS=%MW_CONTEXT_TAGS%,MATLAB:MCPB:V1\""
+	expectedCmdTagNew := "set \"MW_CONTEXT_TAGS=MATLAB:MCPB:V1\""
+
+	// Act
+	require.NoError(t, mcpbstagebuilder.Build("0.0.0-test"))
+
+	// Assert
+	shContent, err := os.ReadFile(filepath.Join(stagingDir, "bundle", "bin", "launch-matlab-mcp.sh")) //nolint:gosec // Test file path from t.TempDir()
+	require.NoError(t, err)
+	assert.Contains(t, string(shContent), expectedShellTag)
+
+	cmdContent, err := os.ReadFile(filepath.Join(stagingDir, "bundle", "bin", "launch-matlab-mcp.cmd")) //nolint:gosec // Test file path from t.TempDir()
+	require.NoError(t, err)
+	cmdText := string(cmdContent)
+	assert.Contains(t, cmdText, expectedCmdTagWithExisting)
+	assert.Contains(t, cmdText, expectedCmdTagNew)
+}
+
 func assertPackageJSONStaged(t *testing.T, stagingDir string) {
 	t.Helper()
 
