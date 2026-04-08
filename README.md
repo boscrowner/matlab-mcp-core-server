@@ -102,7 +102,7 @@ Customize the behavior of the server by providing arguments in the `args` array 
 | ------------- | ------------- | ------------- |
 | matlab-root | Full path specifying which MATLAB to start. Do not include `/bin` in the path. By default, the server tries to find the first MATLAB on the system PATH. | `"--matlab-root=/home/usr/MATLAB/R2025a"` |
 | initialize-matlab-on-startup | To initialize MATLAB as soon as you start the server, set this argument to `true`. By default, MATLAB only starts when the first tool is called. | `"--initialize-matlab-on-startup=true"` |
-| initial-working-folder | Specify the folder where MATLAB starts. If you do not specify a value, MATLAB starts at the path of your AI application's first [Root (MCP)](https://modelcontextprotocol.io/specification/2025-06-18/client/roots). If you have not defined a root, MATLAB starts in these locations: <br> <ul><li>Linux: `/home/username` </li><li> Windows: `C:\Users\username\Documents`</li><li>Mac: `/Users/username/Documents`</li></ul> | `"--initial-working-folder=C:\\Users\\name\\MyProject"` |
+| initial-working-folder | Specify the folder where MATLAB starts. If you do not specify a value, MATLAB starts at the path of your AI application's first [Root (MCP)](https://modelcontextprotocol.io/specification/latest/client/roots). If you have not defined a root, MATLAB starts in these locations: <br> <ul><li>Linux: `/home/username` </li><li> Windows: `C:\Users\username\Documents`</li><li>Mac: `/Users/username/Documents`</li></ul> | `"--initial-working-folder=C:\\Users\\name\\MyProject"` |
 | matlab-display-mode | Specify whether to show the MATLAB desktop. Use `desktop` mode (default) to show the MATLAB desktop. Use `nodesktop` mode to use MATLAB only from your AI application, without the MATLAB desktop. Note that in `nodesktop` mode, commands requiring a graphical interface (such as `edit`, `open`, `open_system`, `uifigure`, and `appdesigner`) will still open MATLAB windows on your desktop.| `"--matlab-display-mode=nodesktop"` |
 | disable-telemetry | To disable anonymized data collection, set this argument to `true`. For details, see [Data Collection](#data-collection). | `"--disable-telemetry=true"` |
 
@@ -135,7 +135,7 @@ Customize the behavior of the server by providing arguments in the `args` array 
 
 ## Resources
 
-The MCP server provides [Resources (MCP)](https://modelcontextprotocol.io/specification/2025-03-26/server/resources) to help your AI application write MATLAB code. To see instructions for using this resource, refer to the documentation of your AI application that explains how to use resources.
+The MCP server provides [Resources (MCP)](https://modelcontextprotocol.io/specification/latest/server/resources) to help your AI application write MATLAB code. To see instructions for using this resource, refer to the documentation of your AI application that explains how to use resources.
 
 1. `matlab_coding_guidelines`
     - Provides comprehensive MATLAB coding standards for improving code readability, maintainability, and collaboration. The guidelines encompass naming conventions, formatting, commenting, performance optimization, and error handling.
@@ -158,7 +158,7 @@ MathWorks encourages you to use this repository and provide feedback. To request
 
 #
 
-When using the MATLAB MCP Core Server, you should thoroughly review and validate all tool calls before you run them. Always keep a human in the loop for important actions and only proceed once you are confident the call will do exactly what you expect. For more information, see [User Interaction Model (MCP)](https://modelcontextprotocol.io/specification/2025-06-18/server/tools#user-interaction-model) and [Security Considerations (MCP)](https://modelcontextprotocol.io/specification/2025-06-18/server/tools#security-considerations).
+When using the MATLAB MCP Core Server, you should thoroughly review and validate all tool calls before you run them. Always keep a human in the loop for important actions and only proceed once you are confident the call will do exactly what you expect. For more information, see [User Interaction Model (MCP)](https://modelcontextprotocol.io/specification/latest/server/tools#user-interaction-model) and [Security Considerations (MCP)](https://modelcontextprotocol.io/specification/latest/server/tools#security-considerations).
 
 The MATLAB MCP Core server may only be used with MATLAB installations that are used as a Personal Automation Server. Use with a central Automation Server is not allowed. Please contact MathWorks if Automation Server use is required. For more information see the [Program Offering Guide (MathWorks)](https://www.mathworks.com/help//pdf_doc/offering/offering.pdf).
 
