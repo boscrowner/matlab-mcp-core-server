@@ -42,6 +42,13 @@ func FromError(catalog LocaleSpecificCatalog, err Error) string {
 			e.Attr0,
 			e.Attr1,
 		)
+	case *StartupErrors_CustomToolNameConflict_Error:
+		msg := catalog.Get(StartupErrors_CustomToolNameConflict)
+		return fmt.Sprintf(
+			msg,
+			e.Attr0,
+			e.Attr1,
+		)
 	case *StartupErrors_DuplicateParameter_Error:
 		msg := catalog.Get(StartupErrors_DuplicateParameter)
 		return fmt.Sprintf(
@@ -49,6 +56,13 @@ func FromError(catalog LocaleSpecificCatalog, err Error) string {
 			e.Attr0,
 			e.Attr1,
 			e.Attr2,
+		)
+	case *StartupErrors_DuplicateToolName_Error:
+		msg := catalog.Get(StartupErrors_DuplicateToolName)
+		return fmt.Sprintf(
+			msg,
+			e.Attr0,
+			e.Attr1,
 		)
 	case *StartupErrors_FailedToCreateDirectory_Error:
 		msg := catalog.Get(StartupErrors_FailedToCreateDirectory)
@@ -77,6 +91,18 @@ func FromError(catalog LocaleSpecificCatalog, err Error) string {
 	case *StartupErrors_FailedToGetExecutablePath_Error:
 		msg := catalog.Get(StartupErrors_FailedToGetExecutablePath)
 		return msg
+	case *StartupErrors_FailedToParseExtensionFile_Error:
+		msg := catalog.Get(StartupErrors_FailedToParseExtensionFile)
+		return fmt.Sprintf(
+			msg,
+			e.Attr0,
+		)
+	case *StartupErrors_FailedToReadExtensionFile_Error:
+		msg := catalog.Get(StartupErrors_FailedToReadExtensionFile)
+		return fmt.Sprintf(
+			msg,
+			e.Attr0,
+		)
 	case *StartupErrors_FailedToStartWatchdogProcess_Error:
 		msg := catalog.Get(StartupErrors_FailedToStartWatchdogProcess)
 		return msg
@@ -109,6 +135,33 @@ func FromError(catalog LocaleSpecificCatalog, err Error) string {
 		)
 	case *StartupErrors_InvalidParameterType_Error:
 		msg := catalog.Get(StartupErrors_InvalidParameterType)
+		return fmt.Sprintf(
+			msg,
+			e.Attr0,
+			e.Attr1,
+		)
+	case *StartupErrors_InvalidToolDefinition_Error:
+		msg := catalog.Get(StartupErrors_InvalidToolDefinition)
+		return fmt.Sprintf(
+			msg,
+			e.Attr0,
+		)
+	case *StartupErrors_InvalidToolInputSchema_Error:
+		msg := catalog.Get(StartupErrors_InvalidToolInputSchema)
+		return fmt.Sprintf(
+			msg,
+			e.Attr0,
+			e.Attr1,
+		)
+	case *StartupErrors_InvalidToolSignature_Error:
+		msg := catalog.Get(StartupErrors_InvalidToolSignature)
+		return fmt.Sprintf(
+			msg,
+			e.Attr0,
+			e.Attr1,
+		)
+	case *StartupErrors_MissingToolSignature_Error:
+		msg := catalog.Get(StartupErrors_MissingToolSignature)
 		return fmt.Sprintf(
 			msg,
 			e.Attr0,

@@ -58,6 +58,7 @@ func (s *Selector) DefaultParameters() []entities.Parameter {
 		defaultparameters.MATLABSessionConnectionTimeout(),
 		defaultparameters.MATLABSessionDiscoveryTimeout(),
 		defaultparameters.EmbeddedConnectorDetailsTimeout(),
+		defaultparameters.ExtensionFile(),
 	}
 
 	matlabFeature := s.applicationDefinition.Features().MATLAB

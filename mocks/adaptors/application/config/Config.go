@@ -215,6 +215,50 @@ func (_c *MockConfig_EmbeddedConnectorDetailsTimeout_Call) RunAndReturn(run func
 	return _c
 }
 
+// ExtensionFile provides a mock function for the type MockConfig
+func (_mock *MockConfig) ExtensionFile() string {
+	ret := _mock.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for ExtensionFile")
+	}
+
+	var r0 string
+	if returnFunc, ok := ret.Get(0).(func() string); ok {
+		r0 = returnFunc()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+	return r0
+}
+
+// MockConfig_ExtensionFile_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ExtensionFile'
+type MockConfig_ExtensionFile_Call struct {
+	*mock.Call
+}
+
+// ExtensionFile is a helper method to define mock.On call
+func (_e *MockConfig_Expecter) ExtensionFile() *MockConfig_ExtensionFile_Call {
+	return &MockConfig_ExtensionFile_Call{Call: _e.mock.On("ExtensionFile")}
+}
+
+func (_c *MockConfig_ExtensionFile_Call) Run(run func()) *MockConfig_ExtensionFile_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockConfig_ExtensionFile_Call) Return(s string) *MockConfig_ExtensionFile_Call {
+	_c.Call.Return(s)
+	return _c
+}
+
+func (_c *MockConfig_ExtensionFile_Call) RunAndReturn(run func() string) *MockConfig_ExtensionFile_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Get provides a mock function for the type MockConfig
 func (_mock *MockConfig) Get(key string) (any, messages.Error) {
 	ret := _mock.Called(key)

@@ -109,6 +109,30 @@ func New_StartupErrors_BadValueForEnvVar_Error(
 	}
 }
 
+// StartupErrors_CustomToolNameConflict_Error defines an error corresponding to the "StartupErrors_CustomToolNameConflict" message catalog message
+type StartupErrors_CustomToolNameConflict_Error struct {
+	Attr0 string
+	Attr1 string
+}
+
+// Error makes StartupErrors_CustomToolNameConflict_Error satisfy the error interface.
+func (e *StartupErrors_CustomToolNameConflict_Error) Error() string {
+	return "StartupErrors_CustomToolNameConflict_Error"
+}
+
+func (*StartupErrors_CustomToolNameConflict_Error) marker() {}
+
+// New_StartupErrors_CustomToolNameConflict_Error makes a new StartupErrors_CustomToolNameConflict_Error error.
+func New_StartupErrors_CustomToolNameConflict_Error(
+	attr0 string,
+	attr1 string,
+) *StartupErrors_CustomToolNameConflict_Error {
+	return &StartupErrors_CustomToolNameConflict_Error{
+		Attr0: attr0,
+		Attr1: attr1,
+	}
+}
+
 // StartupErrors_DuplicateParameter_Error defines an error corresponding to the "StartupErrors_DuplicateParameter" message catalog message
 type StartupErrors_DuplicateParameter_Error struct {
 	Attr0 string
@@ -133,6 +157,30 @@ func New_StartupErrors_DuplicateParameter_Error(
 		Attr0: attr0,
 		Attr1: attr1,
 		Attr2: attr2,
+	}
+}
+
+// StartupErrors_DuplicateToolName_Error defines an error corresponding to the "StartupErrors_DuplicateToolName" message catalog message
+type StartupErrors_DuplicateToolName_Error struct {
+	Attr0 string
+	Attr1 string
+}
+
+// Error makes StartupErrors_DuplicateToolName_Error satisfy the error interface.
+func (e *StartupErrors_DuplicateToolName_Error) Error() string {
+	return "StartupErrors_DuplicateToolName_Error"
+}
+
+func (*StartupErrors_DuplicateToolName_Error) marker() {}
+
+// New_StartupErrors_DuplicateToolName_Error makes a new StartupErrors_DuplicateToolName_Error error.
+func New_StartupErrors_DuplicateToolName_Error(
+	attr0 string,
+	attr1 string,
+) *StartupErrors_DuplicateToolName_Error {
+	return &StartupErrors_DuplicateToolName_Error{
+		Attr0: attr0,
+		Attr1: attr1,
 	}
 }
 
@@ -234,6 +282,48 @@ func (*StartupErrors_FailedToGetExecutablePath_Error) marker() {}
 // New_StartupErrors_FailedToGetExecutablePath_Error makes a new StartupErrors_FailedToGetExecutablePath_Error error.
 func New_StartupErrors_FailedToGetExecutablePath_Error() *StartupErrors_FailedToGetExecutablePath_Error {
 	return &StartupErrors_FailedToGetExecutablePath_Error{}
+}
+
+// StartupErrors_FailedToParseExtensionFile_Error defines an error corresponding to the "StartupErrors_FailedToParseExtensionFile" message catalog message
+type StartupErrors_FailedToParseExtensionFile_Error struct {
+	Attr0 string
+}
+
+// Error makes StartupErrors_FailedToParseExtensionFile_Error satisfy the error interface.
+func (e *StartupErrors_FailedToParseExtensionFile_Error) Error() string {
+	return "StartupErrors_FailedToParseExtensionFile_Error"
+}
+
+func (*StartupErrors_FailedToParseExtensionFile_Error) marker() {}
+
+// New_StartupErrors_FailedToParseExtensionFile_Error makes a new StartupErrors_FailedToParseExtensionFile_Error error.
+func New_StartupErrors_FailedToParseExtensionFile_Error(
+	attr0 string,
+) *StartupErrors_FailedToParseExtensionFile_Error {
+	return &StartupErrors_FailedToParseExtensionFile_Error{
+		Attr0: attr0,
+	}
+}
+
+// StartupErrors_FailedToReadExtensionFile_Error defines an error corresponding to the "StartupErrors_FailedToReadExtensionFile" message catalog message
+type StartupErrors_FailedToReadExtensionFile_Error struct {
+	Attr0 string
+}
+
+// Error makes StartupErrors_FailedToReadExtensionFile_Error satisfy the error interface.
+func (e *StartupErrors_FailedToReadExtensionFile_Error) Error() string {
+	return "StartupErrors_FailedToReadExtensionFile_Error"
+}
+
+func (*StartupErrors_FailedToReadExtensionFile_Error) marker() {}
+
+// New_StartupErrors_FailedToReadExtensionFile_Error makes a new StartupErrors_FailedToReadExtensionFile_Error error.
+func New_StartupErrors_FailedToReadExtensionFile_Error(
+	attr0 string,
+) *StartupErrors_FailedToReadExtensionFile_Error {
+	return &StartupErrors_FailedToReadExtensionFile_Error{
+		Attr0: attr0,
+	}
 }
 
 // StartupErrors_FailedToStartWatchdogProcess_Error defines an error corresponding to the "StartupErrors_FailedToStartWatchdogProcess" message catalog message
@@ -371,6 +461,99 @@ func New_StartupErrors_InvalidParameterType_Error(
 	attr1 string,
 ) *StartupErrors_InvalidParameterType_Error {
 	return &StartupErrors_InvalidParameterType_Error{
+		Attr0: attr0,
+		Attr1: attr1,
+	}
+}
+
+// StartupErrors_InvalidToolDefinition_Error defines an error corresponding to the "StartupErrors_InvalidToolDefinition" message catalog message
+type StartupErrors_InvalidToolDefinition_Error struct {
+	Attr0 string
+}
+
+// Error makes StartupErrors_InvalidToolDefinition_Error satisfy the error interface.
+func (e *StartupErrors_InvalidToolDefinition_Error) Error() string {
+	return "StartupErrors_InvalidToolDefinition_Error"
+}
+
+func (*StartupErrors_InvalidToolDefinition_Error) marker() {}
+
+// New_StartupErrors_InvalidToolDefinition_Error makes a new StartupErrors_InvalidToolDefinition_Error error.
+func New_StartupErrors_InvalidToolDefinition_Error(
+	attr0 string,
+) *StartupErrors_InvalidToolDefinition_Error {
+	return &StartupErrors_InvalidToolDefinition_Error{
+		Attr0: attr0,
+	}
+}
+
+// StartupErrors_InvalidToolInputSchema_Error defines an error corresponding to the "StartupErrors_InvalidToolInputSchema" message catalog message
+type StartupErrors_InvalidToolInputSchema_Error struct {
+	Attr0 string
+	Attr1 string
+}
+
+// Error makes StartupErrors_InvalidToolInputSchema_Error satisfy the error interface.
+func (e *StartupErrors_InvalidToolInputSchema_Error) Error() string {
+	return "StartupErrors_InvalidToolInputSchema_Error"
+}
+
+func (*StartupErrors_InvalidToolInputSchema_Error) marker() {}
+
+// New_StartupErrors_InvalidToolInputSchema_Error makes a new StartupErrors_InvalidToolInputSchema_Error error.
+func New_StartupErrors_InvalidToolInputSchema_Error(
+	attr0 string,
+	attr1 string,
+) *StartupErrors_InvalidToolInputSchema_Error {
+	return &StartupErrors_InvalidToolInputSchema_Error{
+		Attr0: attr0,
+		Attr1: attr1,
+	}
+}
+
+// StartupErrors_InvalidToolSignature_Error defines an error corresponding to the "StartupErrors_InvalidToolSignature" message catalog message
+type StartupErrors_InvalidToolSignature_Error struct {
+	Attr0 string
+	Attr1 string
+}
+
+// Error makes StartupErrors_InvalidToolSignature_Error satisfy the error interface.
+func (e *StartupErrors_InvalidToolSignature_Error) Error() string {
+	return "StartupErrors_InvalidToolSignature_Error"
+}
+
+func (*StartupErrors_InvalidToolSignature_Error) marker() {}
+
+// New_StartupErrors_InvalidToolSignature_Error makes a new StartupErrors_InvalidToolSignature_Error error.
+func New_StartupErrors_InvalidToolSignature_Error(
+	attr0 string,
+	attr1 string,
+) *StartupErrors_InvalidToolSignature_Error {
+	return &StartupErrors_InvalidToolSignature_Error{
+		Attr0: attr0,
+		Attr1: attr1,
+	}
+}
+
+// StartupErrors_MissingToolSignature_Error defines an error corresponding to the "StartupErrors_MissingToolSignature" message catalog message
+type StartupErrors_MissingToolSignature_Error struct {
+	Attr0 string
+	Attr1 string
+}
+
+// Error makes StartupErrors_MissingToolSignature_Error satisfy the error interface.
+func (e *StartupErrors_MissingToolSignature_Error) Error() string {
+	return "StartupErrors_MissingToolSignature_Error"
+}
+
+func (*StartupErrors_MissingToolSignature_Error) marker() {}
+
+// New_StartupErrors_MissingToolSignature_Error makes a new StartupErrors_MissingToolSignature_Error error.
+func New_StartupErrors_MissingToolSignature_Error(
+	attr0 string,
+	attr1 string,
+) *StartupErrors_MissingToolSignature_Error {
+	return &StartupErrors_MissingToolSignature_Error{
 		Attr0: attr0,
 		Attr1: attr1,
 	}

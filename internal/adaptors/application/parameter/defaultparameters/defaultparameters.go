@@ -269,3 +269,16 @@ func EmbeddedConnectorDetailsTimeout() *parameter.Parameter[time.Duration] {
 		/* piiSafe */ true,
 	)
 }
+
+func ExtensionFile() *parameter.Parameter[string] {
+	return parameter.NewParameter(
+		/* id */ "ExtensionFile",
+		/* flagName */ "extension-file",
+		/* hiddenFlag */ false,
+		/* envVarName */ "",
+		/* descriptionKey */ messages.CLIMessages_ExtensionFileDescription,
+		/* defaultValue */ "",
+		/* recordToLog */ true,
+		/* piiSafe */ false,
+	)
+}

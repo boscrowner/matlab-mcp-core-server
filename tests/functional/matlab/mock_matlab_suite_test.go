@@ -45,18 +45,20 @@ func (s *MockMATLABTestSuite) SetupSuite() {
 }
 
 // CreateSession creates a mock MATLAB session with debug logging enabled.
+// Additional CLI args (e.g. "--extension-file=...") are forwarded to the server.
 // Usage:
 //
-//	session := s.CreateSession(mockmatlab.HappyConfig())
+//	session, err := s.CreateSession(mockmatlab.HappyConfig())
+//	s.Require().NoError(err)
 //	defer s.CleanupSession(session, true)
-func (s *MockMATLABTestSuite) CreateSession(cfg mockmatlab.Config) *mcpclient.LoggedSession {
+func (s *MockMATLABTestSuite) CreateSession(cfg mockmatlab.Config, args ...string) (*mcpclient.LoggedSession, error) {
 	ctx := s.T().Context()
 
 	value, err := cfg.ToEnvValue()
 	s.Require().NoError(err, "failed to serialize mock config")
 	env := pathcontrol.UpdateEnvEntry(s.defaultEnv, mockmatlab.EnvMockMATLABConfig, value)
 
-	preparedArgs, err := logs.PrepareSessionCLIArgs(nil, "debug", "mcp-functional-logs-")
+	preparedArgs, err := logs.PrepareSessionCLIArgs(args, "debug", "mcp-functional-logs-")
 	s.Require().NoError(err, "should prepare log args")
 	s.T().Cleanup(func() {
 		s.NoError(os.RemoveAll(preparedArgs.TempBaseDir), "should remove log temp dir")
@@ -64,7 +66,9 @@ func (s *MockMATLABTestSuite) CreateSession(cfg mockmatlab.Config) *mcpclient.Lo
 
 	client := mcpclient.NewClient(ctx, s.mcpServerPath, env, preparedArgs.Args...)
 	session, err := client.CreateSession(ctx)
-	s.Require().NoError(err)
+	if err != nil {
+		return nil, err
+	}
 
 	loggedSession, err := s.sessionFactory.New(
 		session,
@@ -75,9 +79,11 @@ func (s *MockMATLABTestSuite) CreateSession(cfg mockmatlab.Config) *mcpclient.Lo
 			{Glob: "watchdog-*.log", Header: "MCP Watchdog Log File"},
 		},
 	)
-	s.Require().NoError(err)
+	if err != nil {
+		return nil, err
+	}
 
-	return loggedSession
+	return loggedSession, nil
 }
 
 // AssertNoErrorLogs checks server log files for ERROR-level entries.

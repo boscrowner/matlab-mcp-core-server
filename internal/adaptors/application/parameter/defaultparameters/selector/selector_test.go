@@ -74,6 +74,10 @@ func TestSelector_DefaultParameters_DescriptionsResolved(t *testing.T) {
 			description: "MATLAB session mode description",
 			times:       1,
 		},
+		messages.CLIMessages_ExtensionFileDescription: {
+			description: "Extension file description",
+			times:       1,
+		},
 	}
 
 	mockAppDef.EXPECT().
@@ -122,7 +126,7 @@ func TestSelector_DefaultParameters_MATLABEnabled(t *testing.T) {
 	parameters := sut.DefaultParameters()
 
 	// Assert
-	assert.Len(t, parameters, 20)
+	assert.Len(t, parameters, 21)
 
 	for _, p := range parameters {
 		assert.True(t, p.GetActive(), "parameter %s should be active", p.GetID())
@@ -158,6 +162,7 @@ func TestSelector_DefaultParameters_MATLABDisabled(t *testing.T) {
 		"MATLABSessionConnectionTimeout":     false,
 		"MATLABSessionDiscoveryTimeout":      false,
 		"EmbeddedConnectorDetailsTimeout":    false,
+		"ExtensionFile":                      false,
 	}
 
 	mockAppDef.EXPECT().
@@ -175,7 +180,7 @@ func TestSelector_DefaultParameters_MATLABDisabled(t *testing.T) {
 	parameters := sut.DefaultParameters()
 
 	// Assert
-	assert.Len(t, parameters, 20)
+	assert.Len(t, parameters, 21)
 
 	for _, p := range parameters {
 		expectedState, exists := expectedActiveStateByParameterID[p.GetID()]

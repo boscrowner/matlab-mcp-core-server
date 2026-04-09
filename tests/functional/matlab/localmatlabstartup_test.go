@@ -21,7 +21,8 @@ func TestLocalMATLABStartupTestSuite(t *testing.T) {
 
 func (s *LocalMATLABStartupTestSuite) TestHappyPath_EvaluateCode_ReturnsOutput() {
 	ctx := s.T().Context()
-	session := s.CreateSession(mockmatlab.HappyConfig())
+	session, err := s.CreateSession(mockmatlab.HappyConfig())
+	s.Require().NoError(err)
 	defer s.CleanupSession(session, true)
 
 	output, err := session.EvaluateCode(ctx, "disp('hello world')", s.T().TempDir())
@@ -31,19 +32,21 @@ func (s *LocalMATLABStartupTestSuite) TestHappyPath_EvaluateCode_ReturnsOutput()
 
 func (s *LocalMATLABStartupTestSuite) TestErrorPath_MATLABExitsImmediately_EvaluationFails() {
 	ctx := s.T().Context()
-	session := s.CreateSession(mockmatlab.ExitImmediatelyConfig(1))
+	session, err := s.CreateSession(mockmatlab.ExitImmediatelyConfig(1))
+	s.Require().NoError(err)
 	defer s.CleanupSession(session, false)
 
-	_, err := session.EvaluateCode(ctx, "disp('should fail')", s.T().TempDir())
+	_, err = session.EvaluateCode(ctx, "disp('should fail')", s.T().TempDir())
 	s.Error(err, "evaluation should fail when MATLAB exits immediately")
 }
 
 func (s *LocalMATLABStartupTestSuite) TestErrorPath_MATLABStartupFailure_ReturnsStartupError() {
 	ctx := s.T().Context()
-	session := s.CreateSession(mockmatlab.StartupFailureConfig())
+	session, err := s.CreateSession(mockmatlab.StartupFailureConfig())
+	s.Require().NoError(err)
 	defer s.CleanupSession(session, false)
 
-	_, err := session.EvaluateCode(ctx, "disp('should fail')", s.T().TempDir())
+	_, err = session.EvaluateCode(ctx, "disp('should fail')", s.T().TempDir())
 	s.Require().Error(err, "evaluation should fail when MATLAB startup fails")
 	errMsg := err.Error()
 	s.Contains(errMsg, "MATLAB startup failed")

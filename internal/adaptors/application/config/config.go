@@ -36,6 +36,7 @@ type validatedArguments struct {
 	matlabSessionConnectionTimeout   time.Duration
 	matlabSessionDiscoveryTimeout    time.Duration
 	embeddedConnectorDetailsTimeout  time.Duration
+	extensionFile                    string
 
 	// Telemetry
 	disableTelemetry                   bool
@@ -150,6 +151,10 @@ func (c *config) MATLABSessionConnectionTimeout() time.Duration {
 
 func (c *config) MATLABSessionDiscoveryTimeout() time.Duration {
 	return c.matlabSessionDiscoveryTimeout
+}
+
+func (c *config) ExtensionFile() string {
+	return c.extensionFile
 }
 
 func (c *config) BaseDir() string {
@@ -289,6 +294,11 @@ func validateArguments(rawCfg *rawConfig) (validatedArguments, messages.Error) {
 		return validatedArguments{}, messages.New_StartupErrors_InvalidDisplayMode_Error(displayMode)
 	}
 
+	extensionFile, err := get(rawCfg, defaultparameters.ExtensionFile())
+	if err != nil {
+		return validatedArguments{}, err
+	}
+
 	matlabSessionMode, err := get(rawCfg, defaultparameters.MATLABSessionMode())
 	if err != nil {
 		return validatedArguments{}, err
@@ -378,6 +388,7 @@ func validateArguments(rawCfg *rawConfig) (validatedArguments, messages.Error) {
 		matlabSessionConnectionTimeout:   matlabSessionConnectionTimeout,
 		matlabSessionDiscoveryTimeout:    matlabSessionDiscoveryTimeout,
 		embeddedConnectorDetailsTimeout:  embeddedConnectorDetailsTimeout,
+		extensionFile:                    extensionFile,
 
 		// Telemetry
 		disableTelemetry:                   disableTelemetry,

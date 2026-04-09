@@ -41,6 +41,7 @@ func defaultParameters() []entities.Parameter {
 		defaultparameters.EmbeddedConnectorDetailsTimeout(),
 
 		defaultparameters.DisableTelemetry(),
+		defaultparameters.ExtensionFile(),
 		defaultparameters.TelemetryCollectorEndpoint(),
 		defaultparameters.TelemetryCollectionInterval(),
 		defaultparameters.TelemetryCollectorEndpointInsecure(),
@@ -80,6 +81,7 @@ func TestNewConfig_InvalidParameterType(t *testing.T) {
 		{key: defaultparameters.MATLABSessionConnectionTimeout().GetID(), invalidValue: "5s", expectedType: "time.Duration"},
 		{key: defaultparameters.MATLABSessionDiscoveryTimeout().GetID(), invalidValue: "30s", expectedType: "time.Duration"},
 		{key: defaultparameters.EmbeddedConnectorDetailsTimeout().GetID(), invalidValue: "1m", expectedType: "time.Duration"},
+		{key: defaultparameters.ExtensionFile().GetID(), invalidValue: 123, expectedType: "string"},
 
 		{key: defaultparameters.DisableTelemetry().GetID(), invalidValue: "false", expectedType: "bool"},
 		{key: defaultparameters.TelemetryCollectorEndpoint().GetID(), invalidValue: 123, expectedType: "string"},
@@ -145,6 +147,7 @@ func TestNewConfig_MissingParameter(t *testing.T) {
 		defaultparameters.MATLABSessionConnectionTimeout(),
 		defaultparameters.MATLABSessionDiscoveryTimeout(),
 		defaultparameters.EmbeddedConnectorDetailsTimeout(),
+		defaultparameters.ExtensionFile(),
 		defaultparameters.DisableTelemetry(),
 		defaultparameters.TelemetryCollectorEndpoint(),
 		defaultparameters.TelemetryCollectionInterval(),

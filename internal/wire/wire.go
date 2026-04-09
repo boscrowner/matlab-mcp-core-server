@@ -57,6 +57,9 @@ import (
 	evalmatlabcodesinglesessiontool "github.com/matlab/matlab-mcp-core-server/internal/adaptors/mcp/tools/singlesession/evalmatlabcode"
 	runmatlabfilesinglesessiontool "github.com/matlab/matlab-mcp-core-server/internal/adaptors/mcp/tools/singlesession/runmatlabfile"
 	runmatlabtestfilesinglesessiontool "github.com/matlab/matlab-mcp-core-server/internal/adaptors/mcp/tools/singlesession/runmatlabtestfile"
+	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/mcp/tools/singlesession/custom"
+	customloader "github.com/matlab/matlab-mcp-core-server/internal/adaptors/mcp/tools/singlesession/custom/loader"
+	customvalidator "github.com/matlab/matlab-mcp-core-server/internal/adaptors/mcp/tools/singlesession/custom/loader/validator"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/messagecatalog"
 	osadaptor "github.com/matlab/matlab-mcp-core-server/internal/adaptors/os"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/telemetry"
@@ -71,6 +74,8 @@ import (
 	"github.com/matlab/matlab-mcp-core-server/internal/facades/osfacade"
 	"github.com/matlab/matlab-mcp-core-server/internal/facades/registryfacade"
 	"github.com/matlab/matlab-mcp-core-server/internal/usecases/checkmatlabcode"
+	"github.com/matlab/matlab-mcp-core-server/internal/usecases/evalcustomtool"
+	"github.com/matlab/matlab-mcp-core-server/internal/usecases/evalcustomtool/functioncall"
 	"github.com/matlab/matlab-mcp-core-server/internal/usecases/detectmatlabtoolboxes"
 	"github.com/matlab/matlab-mcp-core-server/internal/usecases/evalmatlabcode"
 	"github.com/matlab/matlab-mcp-core-server/internal/usecases/listavailablematlabs"
@@ -209,6 +214,7 @@ func Initialize(serverDefinition ApplicationDefinition) *Application {
 		configurator.New,
 		wire.Bind(new(configurator.ConfigFactory), new(*config.Factory)),
 		wire.Bind(new(configurator.ApplicationDefinition), new(ApplicationDefinition)),
+		wire.Bind(new(configurator.CustomToolFactory), new(*custom.Factory)),
 
 		// Tools
 		wire.Bind(new(basetool.LoggerFactory), new(*logger.Factory)),
@@ -266,6 +272,24 @@ func Initialize(serverDefinition ApplicationDefinition) *Application {
 
 		runmatlabtestfile.New,
 		wire.Bind(new(runmatlabtestfile.PathValidator), new(*pathvalidator.PathValidator)),
+
+		// Custom Tool Factory
+		custom.NewFactory,
+		wire.Bind(new(custom.Loader), new(*customloader.Loader)),
+		wire.Bind(new(custom.ConfigFactory), new(*config.Factory)),
+
+		// Custom Tool Loader
+		customloader.NewLoader,
+		wire.Bind(new(customloader.OSLayer), new(*osfacade.OsFacade)),
+		wire.Bind(new(customloader.LoggerFactory), new(*logger.Factory)),
+		customvalidator.NewValidator,
+		wire.Bind(new(customloader.ToolValidator), new(*customvalidator.Validator)),
+
+		// EvalCustomTool Use Case
+		evalcustomtool.New,
+		wire.Bind(new(evalcustomtool.FunctionCallAssembler), new(*functioncall.Assembler)),
+		functioncall.NewAssembler,
+		wire.Bind(new(custom.Usecase), new(*evalcustomtool.Usecase)),
 
 		// Resources
 		wire.Bind(new(baseresource.LoggerFactory), new(*logger.Factory)),
