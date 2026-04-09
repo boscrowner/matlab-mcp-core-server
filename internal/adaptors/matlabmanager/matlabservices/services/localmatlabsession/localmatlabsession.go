@@ -12,6 +12,8 @@ import (
 	"github.com/matlab/matlab-mcp-core-server/internal/entities"
 )
 
+const startupCode = "sessionPath = getenv('MW_MCP_SESSION_DIR');addpath(sessionPath);matlab_mcp.initializeMCP(); clear sessionPath;"
+
 type SessionDirectoryFactory interface {
 	New(logger entities.Logger) (directory.Directory, error)
 }
@@ -76,8 +78,6 @@ func (m *Starter) StartLocalMATLABSession(ctx context.Context, logger entities.L
 		sessionDir.CertificateFile(),
 		sessionDir.CertificateKeyFile(),
 	)
-
-	startupCode := "sessionPath = '" + sessionDirPath + "';addpath(sessionPath);matlab_mcp.initializeMCP();clear sessionPath;"
 
 	startupFlags := m.processDetails.StartupFlag(runtime.GOOS, request.ShowMATLABDesktop, startupCode)
 

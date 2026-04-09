@@ -70,7 +70,7 @@ func TestStarter_StartLocalMATLABSession_HappyPath(t *testing.T) {
 	expectedSecurePort := "9999"
 	expectedCertificatePEM := []byte("-----BEGIN CERTIFICATE-----\ntest-cert\n-----END CERTIFICATE-----")
 	expectedEnv := []string{"MATLAB_MCP_API_KEY=" + expectedAPIKey}
-	expectedStartupCode := "sessionPath = '" + expectedSessionDirPath + "';addpath(sessionPath);matlab_mcp.initializeMCP();clear sessionPath;"
+	expectedStartupCode := "sessionPath = getenv('MW_MCP_SESSION_DIR');addpath(sessionPath);matlab_mcp.initializeMCP(); clear sessionPath;"
 	showDesktop := false
 	expectedStartupFlags := []string{"-r", expectedStartupCode}
 	expectedProcessID := 12345
@@ -194,7 +194,7 @@ func TestStarter_StartLocalMATLABSession_WithStartingDirectory(t *testing.T) {
 	expectedSecurePort := "9999"
 	expectedCertificatePEM := []byte("-----BEGIN CERTIFICATE-----\ntest-cert\n-----END CERTIFICATE-----")
 	expectedEnv := []string{"MATLAB_MCP_API_KEY=" + expectedAPIKey}
-	expectedStartupCode := "sessionPath = '" + expectedSessionDirPath + "';addpath(sessionPath);matlab_mcp.initializeMCP();clear sessionPath;"
+	expectedStartupCode := "sessionPath = getenv('MW_MCP_SESSION_DIR');addpath(sessionPath);matlab_mcp.initializeMCP(); clear sessionPath;"
 	showDesktop := false
 	expectedStartupFlags := []string{"-r", expectedStartupCode}
 	expectedProcessID := 12345
@@ -349,7 +349,7 @@ func TestStarter_StartLocalMATLABSession_MATLABProcessLauncherError(t *testing.T
 	expectedAPIKey := "test-api-key-12345"
 	expectedMATLABRoot := filepath.Join("usr", "local", "MATLAB", "R2024b")
 	expectedEnv := []string{"MATLAB_MCP_API_KEY=" + expectedAPIKey}
-	expectedStartupCode := "sessionPath = '" + expectedSessionDirPath + "';addpath(sessionPath);matlab_mcp.initializeMCP();clear sessionPath;"
+	expectedStartupCode := "sessionPath = getenv('MW_MCP_SESSION_DIR');addpath(sessionPath);matlab_mcp.initializeMCP(); clear sessionPath;"
 	showDesktop := false
 	expectedStartupFlags := []string{"-r", expectedStartupCode}
 	expectedError := assert.AnError
@@ -450,7 +450,7 @@ func TestStarter_StartLocalMATLABSession_RegisterProcessPIDWithWatchdogError(t *
 	expectedSecurePort := "9999"
 	expectedCertificatePEM := []byte("-----BEGIN CERTIFICATE-----\ntest-cert\n-----END CERTIFICATE-----")
 	expectedEnv := []string{"MATLAB_MCP_API_KEY=" + expectedAPIKey}
-	expectedStartupCode := "sessionPath = '" + expectedSessionDirPath + "';addpath(sessionPath);matlab_mcp.initializeMCP();clear sessionPath;"
+	expectedStartupCode := "sessionPath = getenv('MW_MCP_SESSION_DIR');addpath(sessionPath);matlab_mcp.initializeMCP(); clear sessionPath;"
 	expectedStartupFlags := []string{"-r", expectedStartupCode}
 	expectedError := assert.AnError
 	expectedProcessID := 12345
@@ -566,7 +566,7 @@ func TestStarter_StartLocalMATLABSession_GetEmbeddedConnectorDetailsError(t *tes
 	expectedAPIKey := "test-api-key-12345"
 	expectedMATLABRoot := filepath.Join("usr", "local", "MATLAB", "R2024b")
 	expectedEnv := []string{"MATLAB_MCP_API_KEY=" + expectedAPIKey}
-	expectedStartupCode := "sessionPath = '" + expectedSessionDirPath + "';addpath(sessionPath);matlab_mcp.initializeMCP();clear sessionPath;"
+	expectedStartupCode := "sessionPath = getenv('MW_MCP_SESSION_DIR');addpath(sessionPath);matlab_mcp.initializeMCP(); clear sessionPath;"
 	showDesktop := false
 	expectedStartupFlags := []string{"-r", expectedStartupCode}
 	expectedProcessID := 12345
@@ -680,7 +680,7 @@ func TestStarter_StartLocalMATLABSession_CleanupReturnsSessionCleanupError(t *te
 	expectedSecurePort := "9999"
 	expectedCertificatePEM := []byte("-----BEGIN CERTIFICATE-----\ntest-cert\n-----END CERTIFICATE-----")
 	expectedEnv := []string{"MATLAB_MCP_API_KEY=" + expectedAPIKey}
-	expectedStartupCode := "sessionPath = '" + expectedSessionDirPath + "';addpath(sessionPath);matlab_mcp.initializeMCP();clear sessionPath;"
+	expectedStartupCode := "sessionPath = getenv('MW_MCP_SESSION_DIR');addpath(sessionPath);matlab_mcp.initializeMCP(); clear sessionPath;"
 	showDesktop := false
 	expectedStartupFlags := []string{"-r", expectedStartupCode}
 	expectedProcessID := 12345
@@ -792,7 +792,7 @@ func TestStarter_StartLocalMATLABSession_GetEmbeddedConnectorDetailsError_WithNi
 	expectedAPIKey := "test-api-key-12345"
 	expectedMATLABRoot := filepath.Join("usr", "local", "MATLAB", "R2024b")
 	expectedEnv := []string{"MATLAB_MCP_API_KEY=" + expectedAPIKey}
-	expectedStartupCode := "sessionPath = '" + expectedSessionDirPath + "';addpath(sessionPath);matlab_mcp.initializeMCP();clear sessionPath;"
+	expectedStartupCode := "sessionPath = getenv('MW_MCP_SESSION_DIR');addpath(sessionPath);matlab_mcp.initializeMCP(); clear sessionPath;"
 	expectedStartupFlags := []string{"-r", expectedStartupCode}
 	expectedProcessID := 12345
 	expectedError := assert.AnError
