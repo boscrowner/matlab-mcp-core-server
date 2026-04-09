@@ -87,6 +87,13 @@ lint:
 fix-lint:
 	go tool golangci-lint run ./... --fix
 
+matlab-lint:
+ifeq ($(OS),Windows_NT)
+	matlab -batch "cd(fullfile('$(CURDIR)', 'matlab', 'matlab_mcp_toolkit')); buildtool clean lint;"
+else
+	matlab -batch "cd(fullfile('$(CURDIR)', 'matlab', 'matlab_mcp_toolkit')); buildtool clean lint;"
+endif
+
 # Resources
 
 CODING_GUIDELINES_URL := https://raw.githubusercontent.com/matlab/rules/main/matlab-coding-standards.md
@@ -116,6 +123,7 @@ GLNXA64_BIN_DIR :=$(MATLAB_MCP_CORE_SERVER_BUILD_DIR)/glnxa64
 MACI64_BIN_DIR :=$(MATLAB_MCP_CORE_SERVER_BUILD_DIR)/maci64
 MACA64_BIN_DIR :=$(MATLAB_MCP_CORE_SERVER_BUILD_DIR)/maca64
 ALL_BIN_DIR := $(MATLAB_MCP_CORE_SERVER_BUILD_DIR)/all
+MLTBX_DIR :=$(MATLAB_MCP_CORE_SERVER_BUILD_DIR)/mltbx
 
 build: build-for-windows build-for-glnxa64 build-for-maci64 build-for-maca64
 
@@ -162,11 +170,25 @@ else
 	@cp "$(WIN64_BIN_DIR)/matlab-mcp-core-server.exe" "$(ALL_BIN_DIR)/matlab-mcp-core-server-win64.exe"
 endif
 
+build-matlab-addon:
+ifeq ($(OS),Windows_NT)
+	$$env:MATLAB_MCP_CORE_SERVER_MLTBX_DIR='$(MLTBX_DIR)'; matlab -batch "cd(fullfile('$(CURDIR)', 'matlab', 'matlab_mcp_toolkit')); buildtool clean package;"
+else
+	MATLAB_MCP_CORE_SERVER_MLTBX_DIR="$(MLTBX_DIR)" matlab -batch "cd(fullfile('$(CURDIR)', 'matlab', 'matlab_mcp_toolkit')); buildtool clean package;"
+endif
+
 # Testing
 
 unit-tests:
 	go tool gotestsum --packages="./internal/... ./pkg/... ./tests/testutils/..." -- -race -coverprofile cover.out
-	
+
+matlab-unit-tests:
+ifeq ($(OS),Windows_NT)
+	matlab -batch "cd(fullfile('$(CURDIR)', 'matlab', 'matlab_mcp_toolkit')); buildtool clean unit-tests;"
+else
+	matlab -batch "cd(fullfile('$(CURDIR)', 'matlab', 'matlab_mcp_toolkit')); buildtool clean unit-tests;"
+endif
+
 integration-tests:
 	go tool gotestsum --packages="./tests/integration/..." -- -race
 	
@@ -177,8 +199,17 @@ system-tests:
 	go tool gotestsum --packages="./tests/system/..." -- -race -count=1 -timeout 30m
 	@$(CHECK_MATLAB_LEAKS)
 
+matlab-system-tests: build-matlab-addon
+ifeq ($(OS),Windows_NT)
+	$$env:MATLAB_MCP_CORE_SERVER_MLTBX_PATH='$(MLTBX_DIR)/MATLABMCPCoreServerToolkit.mltbx'; matlab -batch "cd(fullfile('$(CURDIR)', 'tests', 'system', 'matlab')); buildtool;"
+else
+	MATLAB_MCP_CORE_SERVER_MLTBX_PATH="$(MLTBX_DIR)/MATLABMCPCoreServerToolkit.mltbx" matlab -batch "cd(fullfile('$(CURDIR)', 'tests', 'system', 'matlab')); buildtool;"
+endif
+
 ci-unit-tests:
 	go test $(RACE_FLAG) -json -count=1 -coverprofile cover.out ./internal/... ./pkg/... ./tests/testutils/...
+
+ci-matlab-unit-tests: matlab-unit-tests
 
 ci-integration-tests:
 	go test $(RACE_FLAG) -json -count=1 ./tests/integration/...
@@ -189,6 +220,10 @@ ci-functional-tests:
 ci-system-tests:
 	go test $(RACE_FLAG) -timeout 120m -json -count=1 ./tests/system/...
 	@$(CHECK_MATLAB_LEAKS)
+
+# Requires MATLAB_MCP_CORE_SERVER_MLTBX_PATH to be set
+ci-matlab-system-tests:
+	matlab -batch "cd(fullfile('$(CURDIR)', 'tests', 'system', 'matlab')); buildtool;"
 
 # Check for leaked MATLAB processes after system tests
 # Tests should clean up all MATLAB sessions they create
