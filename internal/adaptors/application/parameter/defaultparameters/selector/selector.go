@@ -53,6 +53,10 @@ func (s *Selector) DefaultParameters() []entities.Parameter {
 		defaultparameters.UseSingleMATLABSession(),
 		defaultparameters.InitializeMATLABOnStartup(),
 		defaultparameters.MATLABDisplayMode(),
+		defaultparameters.MATLABSessionMode(),
+		defaultparameters.MATLABSessionConnectionDetails(),
+		defaultparameters.MATLABSessionConnectionTimeout(),
+		defaultparameters.MATLABSessionDiscoveryTimeout(),
 		defaultparameters.EmbeddedConnectorDetailsTimeout(),
 	}
 

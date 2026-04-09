@@ -95,6 +95,12 @@ func FromError(catalog LocaleSpecificCatalog, err Error) string {
 			msg,
 			e.Attr0,
 		)
+	case *StartupErrors_InvalidMATLABSessionMode_Error:
+		msg := catalog.Get(StartupErrors_InvalidMATLABSessionMode)
+		return fmt.Sprintf(
+			msg,
+			e.Attr0,
+		)
 	case *StartupErrors_InvalidParameterKey_Error:
 		msg := catalog.Get(StartupErrors_InvalidParameterKey)
 		return fmt.Sprintf(

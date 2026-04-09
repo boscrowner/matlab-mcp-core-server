@@ -51,7 +51,7 @@ func New(
 	}
 }
 
-func (s *MATLABStartingDirSelector) SelectMatlabStartingDir(logger entities.Logger) (string, error) {
+func (s *MATLABStartingDirSelector) SelectMATLABStartingDir(logger entities.Logger) (string, error) {
 	config, configErr := s.configFactory.Config()
 	if configErr != nil {
 		return "", configErr

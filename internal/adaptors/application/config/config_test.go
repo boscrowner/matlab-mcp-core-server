@@ -22,17 +22,25 @@ func defaultParameters() []entities.Parameter {
 	return []entities.Parameter{
 		defaultparameters.HelpMode(),
 		defaultparameters.VersionMode(),
-		defaultparameters.DisableTelemetry(),
-		defaultparameters.UseSingleMATLABSession(),
+		defaultparameters.WatchdogMode(),
+
+		defaultparameters.BaseDir(),
+		defaultparameters.ServerInstanceID(),
+
 		defaultparameters.LogLevel(),
+
+		defaultparameters.UseSingleMATLABSession(),
 		defaultparameters.PreferredLocalMATLABRoot(),
 		defaultparameters.PreferredMATLABStartingDirectory(),
-		defaultparameters.BaseDir(),
-		defaultparameters.WatchdogMode(),
-		defaultparameters.ServerInstanceID(),
 		defaultparameters.InitializeMATLABOnStartup(),
 		defaultparameters.MATLABDisplayMode(),
+		defaultparameters.MATLABSessionMode(),
+		defaultparameters.MATLABSessionConnectionDetails(),
+		defaultparameters.MATLABSessionConnectionTimeout(),
+		defaultparameters.MATLABSessionDiscoveryTimeout(),
 		defaultparameters.EmbeddedConnectorDetailsTimeout(),
+
+		defaultparameters.DisableTelemetry(),
 		defaultparameters.TelemetryCollectorEndpoint(),
 		defaultparameters.TelemetryCollectionInterval(),
 		defaultparameters.TelemetryCollectorEndpointInsecure(),
@@ -49,31 +57,38 @@ func configDefaultParsedArgs() map[string]any {
 
 func TestNewConfig_InvalidParameterType(t *testing.T) {
 	testCases := []struct {
-		name         string
 		key          string
 		invalidValue any
 		expectedType string
 	}{
-		{name: "LogLevel wrong type", key: defaultparameters.LogLevel().GetID(), invalidValue: 123, expectedType: "string"},
-		{name: "UseSingleMATLABSession wrong type", key: defaultparameters.UseSingleMATLABSession().GetID(), invalidValue: "true", expectedType: "bool"},
-		{name: "InitializeMATLABOnStartup wrong type", key: defaultparameters.InitializeMATLABOnStartup().GetID(), invalidValue: "false", expectedType: "bool"},
-		{name: "VersionMode wrong type", key: defaultparameters.VersionMode().GetID(), invalidValue: "false", expectedType: "bool"},
-		{name: "HelpMode wrong type", key: defaultparameters.HelpMode().GetID(), invalidValue: "false", expectedType: "bool"},
-		{name: "DisableTelemetry wrong type", key: defaultparameters.DisableTelemetry().GetID(), invalidValue: "false", expectedType: "bool"},
-		{name: "PreferredLocalMATLABRoot wrong type", key: defaultparameters.PreferredLocalMATLABRoot().GetID(), invalidValue: 123, expectedType: "string"},
-		{name: "PreferredMATLABStartingDirectory wrong type", key: defaultparameters.PreferredMATLABStartingDirectory().GetID(), invalidValue: 123, expectedType: "string"},
-		{name: "BaseDir wrong type", key: defaultparameters.BaseDir().GetID(), invalidValue: 123, expectedType: "string"},
-		{name: "WatchdogMode wrong type", key: defaultparameters.WatchdogMode().GetID(), invalidValue: "false", expectedType: "bool"},
-		{name: "ServerInstanceID wrong type", key: defaultparameters.ServerInstanceID().GetID(), invalidValue: 123, expectedType: "string"},
-		{name: "MATLABDisplayMode wrong type", key: defaultparameters.MATLABDisplayMode().GetID(), invalidValue: 123, expectedType: "string"},
-		{name: "EmbeddedConnectorDetailsTimeout wrong type", key: defaultparameters.EmbeddedConnectorDetailsTimeout().GetID(), invalidValue: 123, expectedType: "string"},
-		{name: "TelemetryCollectorEndpoint wrong type", key: defaultparameters.TelemetryCollectorEndpoint().GetID(), invalidValue: 123, expectedType: "string"},
-		{name: "TelemetryCollectionInterval wrong type", key: defaultparameters.TelemetryCollectionInterval().GetID(), invalidValue: "1m", expectedType: "time.Duration"},
-		{name: "TelemetryCollectorEndpointInsecure wrong type", key: defaultparameters.TelemetryCollectorEndpointInsecure().GetID(), invalidValue: "false", expectedType: "bool"},
+		{key: defaultparameters.VersionMode().GetID(), invalidValue: "false", expectedType: "bool"},
+		{key: defaultparameters.HelpMode().GetID(), invalidValue: "false", expectedType: "bool"},
+		{key: defaultparameters.WatchdogMode().GetID(), invalidValue: "false", expectedType: "bool"},
+
+		{key: defaultparameters.BaseDir().GetID(), invalidValue: 123, expectedType: "string"},
+		{key: defaultparameters.ServerInstanceID().GetID(), invalidValue: 123, expectedType: "string"},
+
+		{key: defaultparameters.LogLevel().GetID(), invalidValue: 123, expectedType: "string"},
+
+		{key: defaultparameters.UseSingleMATLABSession().GetID(), invalidValue: "true", expectedType: "bool"},
+		{key: defaultparameters.InitializeMATLABOnStartup().GetID(), invalidValue: "false", expectedType: "bool"},
+		{key: defaultparameters.PreferredLocalMATLABRoot().GetID(), invalidValue: 123, expectedType: "string"},
+		{key: defaultparameters.PreferredMATLABStartingDirectory().GetID(), invalidValue: 123, expectedType: "string"},
+		{key: defaultparameters.MATLABDisplayMode().GetID(), invalidValue: 123, expectedType: "string"},
+		{key: defaultparameters.MATLABSessionMode().GetID(), invalidValue: 123, expectedType: "string"},
+		{key: defaultparameters.MATLABSessionConnectionDetails().GetID(), invalidValue: 123, expectedType: "string"},
+		{key: defaultparameters.MATLABSessionConnectionTimeout().GetID(), invalidValue: "5s", expectedType: "time.Duration"},
+		{key: defaultparameters.MATLABSessionDiscoveryTimeout().GetID(), invalidValue: "30s", expectedType: "time.Duration"},
+		{key: defaultparameters.EmbeddedConnectorDetailsTimeout().GetID(), invalidValue: "1m", expectedType: "time.Duration"},
+
+		{key: defaultparameters.DisableTelemetry().GetID(), invalidValue: "false", expectedType: "bool"},
+		{key: defaultparameters.TelemetryCollectorEndpoint().GetID(), invalidValue: 123, expectedType: "string"},
+		{key: defaultparameters.TelemetryCollectionInterval().GetID(), invalidValue: "1m", expectedType: "time.Duration"},
+		{key: defaultparameters.TelemetryCollectorEndpointInsecure().GetID(), invalidValue: "false", expectedType: "bool"},
 	}
 
 	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
+		t.Run(tc.key, func(t *testing.T) {
 			// Arrange
 			mockOSLayer := &configmocks.MockOSLayer{}
 			defer mockOSLayer.AssertExpectations(t)
@@ -113,30 +128,31 @@ func TestNewConfig_InvalidParameterType(t *testing.T) {
 }
 
 func TestNewConfig_MissingParameter(t *testing.T) {
-	testCases := []struct {
-		name       string
-		missingKey string
-	}{
-		{name: "missing LogLevel", missingKey: defaultparameters.LogLevel().GetID()},
-		{name: "missing UseSingleMATLABSession", missingKey: defaultparameters.UseSingleMATLABSession().GetID()},
-		{name: "missing InitializeMATLABOnStartup", missingKey: defaultparameters.InitializeMATLABOnStartup().GetID()},
-		{name: "missing VersionMode", missingKey: defaultparameters.VersionMode().GetID()},
-		{name: "missing HelpMode", missingKey: defaultparameters.HelpMode().GetID()},
-		{name: "missing DisableTelemetry", missingKey: defaultparameters.DisableTelemetry().GetID()},
-		{name: "missing PreferredLocalMATLABRoot", missingKey: defaultparameters.PreferredLocalMATLABRoot().GetID()},
-		{name: "missing PreferredMATLABStartingDirectory", missingKey: defaultparameters.PreferredMATLABStartingDirectory().GetID()},
-		{name: "missing BaseDir", missingKey: defaultparameters.BaseDir().GetID()},
-		{name: "missing WatchdogMode", missingKey: defaultparameters.WatchdogMode().GetID()},
-		{name: "missing ServerInstanceID", missingKey: defaultparameters.ServerInstanceID().GetID()},
-		{name: "missing MATLABDisplayMode", missingKey: defaultparameters.MATLABDisplayMode().GetID()},
-		{name: "missing EmbeddedConnectorDetailsTimeout", missingKey: defaultparameters.EmbeddedConnectorDetailsTimeout().GetID()},
-		{name: "missing TelemetryCollectorEndpoint", missingKey: defaultparameters.TelemetryCollectorEndpoint().GetID()},
-		{name: "missing TelemetryCollectionInterval", missingKey: defaultparameters.TelemetryCollectionInterval().GetID()},
-		{name: "missing TelemetryCollectorEndpointInsecure", missingKey: defaultparameters.TelemetryCollectorEndpointInsecure().GetID()},
+	parameters := []entities.Parameter{
+		defaultparameters.VersionMode(),
+		defaultparameters.HelpMode(),
+		defaultparameters.WatchdogMode(),
+		defaultparameters.BaseDir(),
+		defaultparameters.ServerInstanceID(),
+		defaultparameters.LogLevel(),
+		defaultparameters.UseSingleMATLABSession(),
+		defaultparameters.InitializeMATLABOnStartup(),
+		defaultparameters.PreferredLocalMATLABRoot(),
+		defaultparameters.PreferredMATLABStartingDirectory(),
+		defaultparameters.MATLABDisplayMode(),
+		defaultparameters.MATLABSessionMode(),
+		defaultparameters.MATLABSessionConnectionDetails(),
+		defaultparameters.MATLABSessionConnectionTimeout(),
+		defaultparameters.MATLABSessionDiscoveryTimeout(),
+		defaultparameters.EmbeddedConnectorDetailsTimeout(),
+		defaultparameters.DisableTelemetry(),
+		defaultparameters.TelemetryCollectorEndpoint(),
+		defaultparameters.TelemetryCollectionInterval(),
+		defaultparameters.TelemetryCollectorEndpointInsecure(),
 	}
 
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
+	for _, parameter := range parameters {
+		t.Run(parameter.GetID(), func(t *testing.T) {
 			// Arrange
 			mockOSLayer := &configmocks.MockOSLayer{}
 			defer mockOSLayer.AssertExpectations(t)
@@ -151,7 +167,7 @@ func TestNewConfig_MissingParameter(t *testing.T) {
 			args := []string{programName}
 
 			parsedArgs := configDefaultParsedArgs()
-			delete(parsedArgs, tc.missingKey)
+			delete(parsedArgs, parameter.GetID())
 
 			mockOSLayer.EXPECT().
 				Args().
@@ -163,7 +179,7 @@ func TestNewConfig_MissingParameter(t *testing.T) {
 				Return([]entities.Parameter{}, parsedArgs, []string{}, nil).
 				Once()
 
-			expectedError := messages.New_StartupErrors_InvalidParameterKey_Error(tc.missingKey)
+			expectedError := messages.New_StartupErrors_InvalidParameterKey_Error(parameter.GetID())
 
 			// Act
 			cfg, err := config.NewConfig(mockOSLayer, mockParser, mockBuildInfo)
@@ -244,50 +260,41 @@ func TestNewConfig_InvalidLogLevel(t *testing.T) {
 	assert.Nil(t, cfg, "Config should be nil")
 }
 
-func TestNewConfig_InvalidEmbeddedConnectorDetailsTimeout(t *testing.T) {
-	testCases := []string{"not-a-duration", "0s", "-1s"}
+func TestNewConfig_InvalidMATLABSessionMode(t *testing.T) {
+	// Arrange
+	mockOSLayer := &configmocks.MockOSLayer{}
+	defer mockOSLayer.AssertExpectations(t)
 
-	for _, timeoutValue := range testCases {
-		t.Run(timeoutValue, func(t *testing.T) {
-			// Arrange
-			mockOSLayer := &configmocks.MockOSLayer{}
-			defer mockOSLayer.AssertExpectations(t)
+	mockParser := &configmocks.MockParser{}
+	defer mockParser.AssertExpectations(t)
 
-			mockParser := &configmocks.MockParser{}
-			defer mockParser.AssertExpectations(t)
+	mockBuildInfo := &configmocks.MockBuildInfo{}
+	defer mockBuildInfo.AssertExpectations(t)
 
-			mockBuildInfo := &configmocks.MockBuildInfo{}
-			defer mockBuildInfo.AssertExpectations(t)
+	programName := "testprocess"
+	args := []string{programName}
 
-			programName := "testprocess"
-			args := []string{programName}
+	parsedArgs := configDefaultParsedArgs()
+	parsedArgs[defaultparameters.MATLABSessionMode().GetID()] = "invalid-mode"
 
-			parsedArgs := configDefaultParsedArgs()
-			parsedArgs[defaultparameters.EmbeddedConnectorDetailsTimeout().GetID()] = timeoutValue
+	mockOSLayer.EXPECT().
+		Args().
+		Return(args).
+		Once()
 
-			mockOSLayer.EXPECT().
-				Args().
-				Return(args).
-				Once()
+	mockParser.EXPECT().
+		Parse(args[1:]).
+		Return([]entities.Parameter{}, parsedArgs, []string{}, nil).
+		Once()
 
-			mockParser.EXPECT().
-				Parse(args[1:]).
-				Return([]entities.Parameter{}, parsedArgs, []string{}, nil).
-				Once()
+	expectedError := messages.New_StartupErrors_InvalidMATLABSessionMode_Error("invalid-mode")
 
-			expectedError := messages.New_StartupErrors_BadValueForEnvVar_Error(
-				timeoutValue,
-				defaultparameters.EmbeddedConnectorDetailsTimeout().GetEnvVarName(),
-			)
+	// Act
+	cfg, err := config.NewConfig(mockOSLayer, mockParser, mockBuildInfo)
 
-			// Act
-			cfg, err := config.NewConfig(mockOSLayer, mockParser, mockBuildInfo)
-
-			// Assert
-			require.Equal(t, expectedError, err)
-			assert.Nil(t, cfg)
-		})
-	}
+	// Assert
+	require.Equal(t, expectedError, err)
+	assert.Nil(t, cfg, "Config should be nil")
 }
 
 func TestConfig_Version_HappyPath(t *testing.T) {
@@ -402,6 +409,150 @@ func TestConfig_InitializeMATLABOnStartup_DisabledWhenNotSingleSession(t *testin
 	assert.False(t, cfg.InitializeMATLABOnStartup(), "InitializeMATLABOnStartup should be false when UseSingleMATLABSession is false")
 }
 
+func TestNewConfig_MATLABSessionConnectionTimeout_FallsBackToDefaultWhenNotPositive(t *testing.T) {
+	testCases := []struct {
+		name    string
+		timeout time.Duration
+	}{
+		{name: "zero timeout", timeout: 0},
+		{name: "negative timeout", timeout: -time.Minute},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			// Arrange
+			mockOSLayer := &configmocks.MockOSLayer{}
+			defer mockOSLayer.AssertExpectations(t)
+
+			mockParser := &configmocks.MockParser{}
+			defer mockParser.AssertExpectations(t)
+
+			mockBuildInfo := &configmocks.MockBuildInfo{}
+			defer mockBuildInfo.AssertExpectations(t)
+
+			programName := "testprocess"
+			args := []string{programName}
+
+			parsedArgs := configDefaultParsedArgs()
+			parsedArgs[defaultparameters.MATLABSessionConnectionTimeout().GetID()] = tc.timeout
+			expectedTimeout := defaultparameters.MATLABSessionConnectionTimeout().GetTypedDefaultValue()
+
+			mockOSLayer.EXPECT().
+				Args().
+				Return(args).
+				Once()
+
+			mockParser.EXPECT().
+				Parse(args[1:]).
+				Return([]entities.Parameter{}, parsedArgs, []string{}, nil).
+				Once()
+
+			// Act
+			cfg, err := config.NewConfig(mockOSLayer, mockParser, mockBuildInfo)
+
+			// Assert
+			require.NoError(t, err)
+			assert.Equal(t, expectedTimeout, cfg.MATLABSessionConnectionTimeout())
+		})
+	}
+}
+
+func TestNewConfig_MATLABSessionDiscoveryTimeout_FallsBackToDefaultWhenNotPositive(t *testing.T) {
+	testCases := []struct {
+		name    string
+		timeout time.Duration
+	}{
+		{name: "zero timeout", timeout: 0},
+		{name: "negative timeout", timeout: -time.Minute},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			// Arrange
+			mockOSLayer := &configmocks.MockOSLayer{}
+			defer mockOSLayer.AssertExpectations(t)
+
+			mockParser := &configmocks.MockParser{}
+			defer mockParser.AssertExpectations(t)
+
+			mockBuildInfo := &configmocks.MockBuildInfo{}
+			defer mockBuildInfo.AssertExpectations(t)
+
+			programName := "testprocess"
+			args := []string{programName}
+
+			parsedArgs := configDefaultParsedArgs()
+			parsedArgs[defaultparameters.MATLABSessionDiscoveryTimeout().GetID()] = tc.timeout
+			expectedTimeout := defaultparameters.MATLABSessionDiscoveryTimeout().GetTypedDefaultValue()
+
+			mockOSLayer.EXPECT().
+				Args().
+				Return(args).
+				Once()
+
+			mockParser.EXPECT().
+				Parse(args[1:]).
+				Return([]entities.Parameter{}, parsedArgs, []string{}, nil).
+				Once()
+
+			// Act
+			cfg, err := config.NewConfig(mockOSLayer, mockParser, mockBuildInfo)
+
+			// Assert
+			require.NoError(t, err)
+			assert.Equal(t, expectedTimeout, cfg.MATLABSessionDiscoveryTimeout())
+		})
+	}
+}
+
+func TestNewConfig_EmbeddedConnectorDetailsTimeout_FallsBackToDefaultWhenNotPositive(t *testing.T) {
+	testCases := []struct {
+		name    string
+		timeout time.Duration
+	}{
+		{name: "zero timeout", timeout: 0},
+		{name: "negative timeout", timeout: -time.Minute},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			// Arrange
+			mockOSLayer := &configmocks.MockOSLayer{}
+			defer mockOSLayer.AssertExpectations(t)
+
+			mockParser := &configmocks.MockParser{}
+			defer mockParser.AssertExpectations(t)
+
+			mockBuildInfo := &configmocks.MockBuildInfo{}
+			defer mockBuildInfo.AssertExpectations(t)
+
+			programName := "testprocess"
+			args := []string{programName}
+
+			parsedArgs := configDefaultParsedArgs()
+			parsedArgs[defaultparameters.EmbeddedConnectorDetailsTimeout().GetID()] = tc.timeout
+			expectedTimeout := defaultparameters.EmbeddedConnectorDetailsTimeout().GetTypedDefaultValue()
+
+			mockOSLayer.EXPECT().
+				Args().
+				Return(args).
+				Once()
+
+			mockParser.EXPECT().
+				Parse(args[1:]).
+				Return([]entities.Parameter{}, parsedArgs, []string{}, nil).
+				Once()
+
+			// Act
+			cfg, err := config.NewConfig(mockOSLayer, mockParser, mockBuildInfo)
+
+			// Assert
+			require.NoError(t, err)
+			assert.Equal(t, expectedTimeout, cfg.EmbeddedConnectorDetailsTimeout())
+		})
+	}
+}
+
 func TestNewConfig_TelemetryCollectionInterval_FallsBackToDefaultWhenNotPositive(t *testing.T) {
 	testCases := []struct {
 		name     string
@@ -428,7 +579,6 @@ func TestNewConfig_TelemetryCollectionInterval_FallsBackToDefaultWhenNotPositive
 
 			parsedArgs := configDefaultParsedArgs()
 			parsedArgs[defaultparameters.TelemetryCollectionInterval().GetID()] = tc.interval
-
 			expectedInterval := defaultparameters.TelemetryCollectionInterval().GetTypedDefaultValue()
 
 			mockOSLayer.EXPECT().
@@ -468,6 +618,9 @@ func TestConfig_RecordToLogger_HappyPath(t *testing.T) {
 		defaultparameters.PreferredLocalMATLABRoot().GetID():         filepath.Join("home", "matlab"),
 		defaultparameters.UseSingleMATLABSession().GetID():           false,
 		defaultparameters.InitializeMATLABOnStartup().GetID():        false,
+		defaultparameters.MATLABSessionMode().GetID():                string(entities.MATLABSessionModeNew),
+		defaultparameters.MATLABSessionConnectionTimeout().GetID():   5 * time.Second,
+		defaultparameters.MATLABSessionDiscoveryTimeout().GetID():    30 * time.Second,
 	}
 
 	parameters := []entities.Parameter{
@@ -477,6 +630,9 @@ func TestConfig_RecordToLogger_HappyPath(t *testing.T) {
 		defaultparameters.PreferredLocalMATLABRoot(),
 		defaultparameters.PreferredMATLABStartingDirectory(),
 		defaultparameters.InitializeMATLABOnStartup(),
+		defaultparameters.MATLABSessionMode(),
+		defaultparameters.MATLABSessionConnectionTimeout(),
+		defaultparameters.MATLABSessionDiscoveryTimeout(),
 		defaultparameters.HelpMode(),
 		defaultparameters.VersionMode(),
 		defaultparameters.BaseDir(),
@@ -572,6 +728,9 @@ func TestConfig_AsPIISafeJSONString_HappyPath(t *testing.T) {
 		defaultparameters.LogLevel(),
 		defaultparameters.InitializeMATLABOnStartup(),
 		defaultparameters.MATLABDisplayMode(),
+		defaultparameters.MATLABSessionMode(),
+		defaultparameters.MATLABSessionConnectionTimeout(),
+		defaultparameters.MATLABSessionDiscoveryTimeout(),
 		defaultparameters.WatchdogMode(),
 		defaultparameters.TelemetryCollectionInterval(),
 		defaultparameters.TelemetryCollectorEndpointInsecure(),
@@ -588,6 +747,7 @@ func TestConfig_AsPIISafeJSONString_HappyPath(t *testing.T) {
 		defaultparameters.PreferredMATLABStartingDirectory(),
 		defaultparameters.BaseDir(),
 		defaultparameters.ServerInstanceID(),
+		defaultparameters.MATLABSessionConnectionDetails(),
 		defaultparameters.TelemetryCollectorEndpoint(),
 	}
 	for _, param := range redactedParams {

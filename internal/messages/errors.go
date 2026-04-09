@@ -310,6 +310,27 @@ func New_StartupErrors_InvalidLogLevel_Error(
 	}
 }
 
+// StartupErrors_InvalidMATLABSessionMode_Error defines an error corresponding to the "StartupErrors_InvalidMATLABSessionMode" message catalog message
+type StartupErrors_InvalidMATLABSessionMode_Error struct {
+	Attr0 string
+}
+
+// Error makes StartupErrors_InvalidMATLABSessionMode_Error satisfy the error interface.
+func (e *StartupErrors_InvalidMATLABSessionMode_Error) Error() string {
+	return "StartupErrors_InvalidMATLABSessionMode_Error"
+}
+
+func (*StartupErrors_InvalidMATLABSessionMode_Error) marker() {}
+
+// New_StartupErrors_InvalidMATLABSessionMode_Error makes a new StartupErrors_InvalidMATLABSessionMode_Error error.
+func New_StartupErrors_InvalidMATLABSessionMode_Error(
+	attr0 string,
+) *StartupErrors_InvalidMATLABSessionMode_Error {
+	return &StartupErrors_InvalidMATLABSessionMode_Error{
+		Attr0: attr0,
+	}
+}
+
 // StartupErrors_InvalidParameterKey_Error defines an error corresponding to the "StartupErrors_InvalidParameterKey" message catalog message
 type StartupErrors_InvalidParameterKey_Error struct {
 	Attr0 string

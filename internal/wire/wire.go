@@ -17,8 +17,9 @@ import (
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/buildinfo"
 	files "github.com/matlab/matlab-mcp-core-server/internal/adaptors/filesystem/files"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/globalmatlab"
-	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/globalmatlab/matlabrootselector"
-	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/globalmatlab/matlabstartingdirselector"
+	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/globalmatlab/sessionmanager"
+	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/globalmatlab/sessionmanager/matlabrootselector"
+	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/globalmatlab/sessionmanager/matlabstartingdirselector"
 	httpclient "github.com/matlab/matlab-mcp-core-server/internal/adaptors/http/client"
 	httpserver "github.com/matlab/matlab-mcp-core-server/internal/adaptors/http/server"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/logger"
@@ -35,6 +36,8 @@ import (
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/matlabmanager/matlabservices/services/matlablocator/matlabversion"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/matlabmanager/matlabsessionclient"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/matlabmanager/matlabsessionstore"
+	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/matlabmanager/sessiondiscovery"
+	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/matlabmanager/sessiondiscovery/appdatadir"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/mcp/resources/baseresource"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/mcp/resources/codingguidelines"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/mcp/resources/plaintextlivecodegeneration"
@@ -292,10 +295,14 @@ func Initialize(serverDefinition ApplicationDefinition) *Application {
 
 		// Global MATLAB
 		globalmatlab.New,
-		wire.Bind(new(globalmatlab.MATLABManager), new(*matlabmanager.MATLABManager)),
-		wire.Bind(new(globalmatlab.MATLABRootSelector), new(*matlabrootselector.MATLABRootSelector)),
-		wire.Bind(new(globalmatlab.MATLABStartingDirSelector), new(*matlabstartingdirselector.MATLABStartingDirSelector)),
-		wire.Bind(new(globalmatlab.ConfigFactory), new(*config.Factory)),
+		wire.Bind(new(globalmatlab.MATLABManagerAdaptor), new(*sessionmanager.SessionManager)),
+
+		// Session Manager
+		sessionmanager.New,
+		wire.Bind(new(sessionmanager.MATLABManager), new(*matlabmanager.MATLABManager)),
+		wire.Bind(new(sessionmanager.ConfigFactory), new(*config.Factory)),
+		wire.Bind(new(sessionmanager.MATLABRootSelector), new(*matlabrootselector.MATLABRootSelector)),
+		wire.Bind(new(sessionmanager.MATLABStartingDirSelector), new(*matlabstartingdirselector.MATLABStartingDirSelector)),
 
 		// MATLAB Root Selector
 		matlabrootselector.New,
@@ -315,9 +322,11 @@ func Initialize(serverDefinition ApplicationDefinition) *Application {
 
 		// MATLAB Manager
 		matlabmanager.New,
+		wire.Bind(new(matlabmanager.ConfigFactory), new(*config.Factory)),
 		wire.Bind(new(matlabmanager.MATLABServices), new(*matlabservices.MATLABServices)),
 		wire.Bind(new(matlabmanager.MATLABSessionStore), new(*matlabsessionstore.Store)),
 		wire.Bind(new(matlabmanager.MATLABSessionClientFactory), new(*matlabsessionclient.Factory)),
+		wire.Bind(new(matlabmanager.SessionDiscoverer), new(*sessiondiscovery.SessionDiscoverer)),
 
 		// MATLAB Services
 		matlabservices.New,
@@ -371,6 +380,15 @@ func Initialize(serverDefinition ApplicationDefinition) *Application {
 		// MATLAB Session Client Factory
 		matlabsessionclient.NewFactory,
 		wire.Bind(new(matlabsessionclient.HttpClientFactory), new(*httpclient.Factory)),
+
+		// Session Discovery
+		sessiondiscovery.New,
+		wire.Bind(new(sessiondiscovery.AppDataDirGetter), new(*appdatadir.Getter)),
+		wire.Bind(new(sessiondiscovery.OSLayer), new(*osfacade.OsFacade)),
+
+		// App Data Dir
+		appdatadir.New,
+		wire.Bind(new(appdatadir.OSLayer), new(*osfacade.OsFacade)),
 
 		// Shared Dependencies
 

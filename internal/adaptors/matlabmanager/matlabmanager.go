@@ -4,12 +4,19 @@ package matlabmanager
 
 import (
 	"context"
+	"time"
 
+	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/application/config"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/matlabmanager/matlabservices/datatypes"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/matlabmanager/matlabsessionclient/embeddedconnector"
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/matlabmanager/matlabsessionstore"
 	"github.com/matlab/matlab-mcp-core-server/internal/entities"
+	"github.com/matlab/matlab-mcp-core-server/internal/messages"
 )
+
+type ConfigFactory interface {
+	Config() (config.Config, messages.Error)
+}
 
 type MATLABServices interface {
 	ListDiscoveredMatlabInfo(logger entities.Logger) datatypes.ListMatlabInfo
@@ -26,22 +33,37 @@ type MATLABSessionClientFactory interface {
 	New(endpoint embeddedconnector.ConnectionDetails) (entities.MATLABSessionClient, error)
 }
 
+type SessionDiscoverer interface {
+	FromSessionDetails(logger entities.Logger, sessionDetails []byte) (embeddedconnector.ConnectionDetails, error)
+	DiscoverSessions(logger entities.Logger) []embeddedconnector.ConnectionDetails
+}
+
 type MATLABManager struct {
-	matlabServices MATLABServices
-	sessionStore   MATLABSessionStore
-	clientFactory  MATLABSessionClientFactory
+	configFactory     ConfigFactory
+	matlabServices    MATLABServices
+	sessionStore      MATLABSessionStore
+	clientFactory     MATLABSessionClientFactory
+	sessionDiscoverer SessionDiscoverer
+
+	matlabSessionConnectionRetryInterval time.Duration
 }
 
 var _ entities.MATLABManager = (*MATLABManager)(nil)
 
 func New(
+	configFactory ConfigFactory,
 	matlabServices MATLABServices,
 	sessionStore MATLABSessionStore,
 	clientFactory MATLABSessionClientFactory,
+	sessionDiscoverer SessionDiscoverer,
 ) *MATLABManager {
 	return &MATLABManager{
-		matlabServices: matlabServices,
-		sessionStore:   sessionStore,
-		clientFactory:  clientFactory,
+		configFactory:     configFactory,
+		matlabServices:    matlabServices,
+		sessionStore:      sessionStore,
+		clientFactory:     clientFactory,
+		sessionDiscoverer: sessionDiscoverer,
+
+		matlabSessionConnectionRetryInterval: defaultMATLABSessionConnectionRetryInterval,
 	}
 }

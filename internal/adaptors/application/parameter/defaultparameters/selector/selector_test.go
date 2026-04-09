@@ -48,7 +48,7 @@ func TestSelector_DefaultParameters_DescriptionsResolved(t *testing.T) {
 		},
 		messages.CLIMessages_InternalUseDescription: {
 			description: "Internal use description",
-			times:       6,
+			times:       9,
 		},
 		messages.CLIMessages_PreferredLocalMATLABRootDescription: {
 			description: "MATLAB root description",
@@ -68,6 +68,10 @@ func TestSelector_DefaultParameters_DescriptionsResolved(t *testing.T) {
 		},
 		messages.CLIMessages_DisplayModeDescription: {
 			description: "Display mode description",
+			times:       1,
+		},
+		messages.CLIMessages_MATLABSessionModeDescription: {
+			description: "MATLAB session mode description",
 			times:       1,
 		},
 	}
@@ -118,7 +122,7 @@ func TestSelector_DefaultParameters_MATLABEnabled(t *testing.T) {
 	parameters := sut.DefaultParameters()
 
 	// Assert
-	assert.Len(t, parameters, 16)
+	assert.Len(t, parameters, 20)
 
 	for _, p := range parameters {
 		assert.True(t, p.GetActive(), "parameter %s should be active", p.GetID())
@@ -149,6 +153,10 @@ func TestSelector_DefaultParameters_MATLABDisabled(t *testing.T) {
 		"UseSingleMATLABSession":             false,
 		"InitializeMATLABOnStartup":          false,
 		"MATLABDisplayMode":                  false,
+		"MATLABSessionMode":                  false,
+		"MATLABSessionConnectionDetails":     false,
+		"MATLABSessionConnectionTimeout":     false,
+		"MATLABSessionDiscoveryTimeout":      false,
 		"EmbeddedConnectorDetailsTimeout":    false,
 	}
 
@@ -167,7 +175,7 @@ func TestSelector_DefaultParameters_MATLABDisabled(t *testing.T) {
 	parameters := sut.DefaultParameters()
 
 	// Assert
-	assert.Len(t, parameters, 16)
+	assert.Len(t, parameters, 20)
 
 	for _, p := range parameters {
 		expectedState, exists := expectedActiveStateByParameterID[p.GetID()]

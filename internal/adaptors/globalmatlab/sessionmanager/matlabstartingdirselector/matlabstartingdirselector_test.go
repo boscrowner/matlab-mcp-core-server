@@ -6,18 +6,18 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/globalmatlab/matlabstartingdirselector"
+	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/globalmatlab/sessionmanager/matlabstartingdirselector"
 	"github.com/matlab/matlab-mcp-core-server/internal/entities"
 	"github.com/matlab/matlab-mcp-core-server/internal/messages"
 	"github.com/matlab/matlab-mcp-core-server/internal/testutils"
 	configmocks "github.com/matlab/matlab-mcp-core-server/mocks/adaptors/application/config"
-	mocks "github.com/matlab/matlab-mcp-core-server/mocks/adaptors/globalmatlab/matlabstartingdirselector"
+	mocks "github.com/matlab/matlab-mcp-core-server/mocks/adaptors/globalmatlab/sessionmanager/matlabstartingdirselector"
 	osFacademocks "github.com/matlab/matlab-mcp-core-server/mocks/facades/osfacade"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-func TestMATLABStartingDirSelector_New_HappyPath(t *testing.T) {
+func TestNew_HappyPath(t *testing.T) {
 	// Arrange
 	mockOSLayer := &mocks.MockOSLayer{}
 	defer mockOSLayer.AssertExpectations(t)
@@ -38,7 +38,7 @@ func TestMATLABStartingDirSelector_New_HappyPath(t *testing.T) {
 	assert.NotNil(t, selector)
 }
 
-func TestMATLABStartingDirSelector_GetMatlabStartDir_ConfigError(t *testing.T) {
+func TestMATLABStartingDirSelector_SelectMATLABStartingDir_ConfigError(t *testing.T) {
 	// Arrange
 	mockOSLayer := &mocks.MockOSLayer{}
 	defer mockOSLayer.AssertExpectations(t)
@@ -64,14 +64,14 @@ func TestMATLABStartingDirSelector_GetMatlabStartDir_ConfigError(t *testing.T) {
 	selector := matlabstartingdirselector.New(mockConfigFactory, mockOSLayer, mockRootStore, mockRootPathResolver)
 
 	// Act
-	result, err := selector.SelectMatlabStartingDir(mockLogger)
+	result, err := selector.SelectMATLABStartingDir(mockLogger)
 
 	// Assert
-	require.ErrorIs(t, err, expectedError, "SelectMatlabStartingDir should return the error from Config")
+	require.ErrorIs(t, err, expectedError, "SelectMATLABStartingDir should return the error from Config")
 	assert.Empty(t, result)
 }
 
-func TestMATLABStartingDirSelector_GetMatlabStartDir_HappyPath(t *testing.T) {
+func TestMATLABStartingDirSelector_SelectMATLABStartingDir_HappyPath(t *testing.T) {
 	testCases := []struct {
 		name        string
 		os          string
@@ -154,7 +154,7 @@ func TestMATLABStartingDirSelector_GetMatlabStartDir_HappyPath(t *testing.T) {
 			selector := matlabstartingdirselector.New(mockConfigFactory, mockOSLayer, mockRootStore, mockRootPathResolver)
 
 			// Act
-			result, err := selector.SelectMatlabStartingDir(mockLogger)
+			result, err := selector.SelectMATLABStartingDir(mockLogger)
 
 			// Assert
 			require.NoError(t, err)
@@ -163,7 +163,7 @@ func TestMATLABStartingDirSelector_GetMatlabStartDir_HappyPath(t *testing.T) {
 	}
 }
 
-func TestMATLABStartingDirSelector_GetMatlabStartDir_PreferredStartingDirectorySetHappyPath(t *testing.T) {
+func TestMATLABStartingDirSelector_SelectMATLABStartingDir_PreferredStartingDirectorySetHappyPath(t *testing.T) {
 	// Arrange
 	mockOSLayer := &mocks.MockOSLayer{}
 	defer mockOSLayer.AssertExpectations(t)
@@ -205,14 +205,14 @@ func TestMATLABStartingDirSelector_GetMatlabStartDir_PreferredStartingDirectoryS
 	selector := matlabstartingdirselector.New(mockConfigFactory, mockOSLayer, mockRootStore, mockRootPathResolver)
 
 	// Act
-	result, err := selector.SelectMatlabStartingDir(mockLogger)
+	result, err := selector.SelectMATLABStartingDir(mockLogger)
 
 	// Assert
 	require.NoError(t, err)
 	assert.Equal(t, expectedPreferredMATLABStartingDir, result)
 }
 
-func TestMATLABStartingDirSelector_GetMatlabStartDir_UnknownOSHappyPath(t *testing.T) {
+func TestMATLABStartingDirSelector_SelectMATLABStartingDir_UnknownOSHappyPath(t *testing.T) {
 	// Arrange
 	mockOSLayer := &mocks.MockOSLayer{}
 	defer mockOSLayer.AssertExpectations(t)
@@ -270,14 +270,14 @@ func TestMATLABStartingDirSelector_GetMatlabStartDir_UnknownOSHappyPath(t *testi
 	selector := matlabstartingdirselector.New(mockConfigFactory, mockOSLayer, mockRootStore, mockRootPathResolver)
 
 	// Act
-	result, err := selector.SelectMatlabStartingDir(mockLogger)
+	result, err := selector.SelectMATLABStartingDir(mockLogger)
 
 	// Assert
 	require.NoError(t, err)
 	assert.Equal(t, expectedHomeDir, result)
 }
 
-func TestMATLABStartingDirSelector_GetMatlabStartDir_UserHomeDirError(t *testing.T) {
+func TestMATLABStartingDirSelector_SelectMATLABStartingDir_UserHomeDirError(t *testing.T) {
 	// Arrange
 	mockOSLayer := &mocks.MockOSLayer{}
 	defer mockOSLayer.AssertExpectations(t)
@@ -321,14 +321,14 @@ func TestMATLABStartingDirSelector_GetMatlabStartDir_UserHomeDirError(t *testing
 	selector := matlabstartingdirselector.New(mockConfigFactory, mockOSLayer, mockRootStore, mockRootPathResolver)
 
 	// Act
-	result, err := selector.SelectMatlabStartingDir(mockLogger)
+	result, err := selector.SelectMATLABStartingDir(mockLogger)
 
 	// Assert
 	require.ErrorIs(t, err, expectedError)
 	assert.Empty(t, result)
 }
 
-func TestMATLABStartingDirSelector_GetMatlabStartDir_StatErrorOnHomeDir(t *testing.T) {
+func TestMATLABStartingDirSelector_SelectMATLABStartingDir_StatErrorOnHomeDir(t *testing.T) {
 	testCases := []struct {
 		name    string
 		os      string
@@ -410,7 +410,7 @@ func TestMATLABStartingDirSelector_GetMatlabStartDir_StatErrorOnHomeDir(t *testi
 			selector := matlabstartingdirselector.New(mockConfigFactory, mockOSLayer, mockRootStore, mockRootPathResolver)
 
 			// Act
-			result, err := selector.SelectMatlabStartingDir(mockLogger)
+			result, err := selector.SelectMATLABStartingDir(mockLogger)
 
 			// Assert
 			require.ErrorIs(t, err, expectedError)
@@ -419,7 +419,7 @@ func TestMATLABStartingDirSelector_GetMatlabStartDir_StatErrorOnHomeDir(t *testi
 	}
 }
 
-func TestMATLABStartingDirSelector_GetMatlabStartDir_StatErrorOnPreferredMATLABStartingDir(t *testing.T) {
+func TestMATLABStartingDirSelector_SelectMATLABStartingDir_StatErrorOnPreferredMATLABStartingDir(t *testing.T) {
 	// Arrange
 	mockOSLayer := &mocks.MockOSLayer{}
 	defer mockOSLayer.AssertExpectations(t)
@@ -459,14 +459,14 @@ func TestMATLABStartingDirSelector_GetMatlabStartDir_StatErrorOnPreferredMATLABS
 	selector := matlabstartingdirselector.New(mockConfigFactory, mockOSLayer, mockRootStore, mockRootPathResolver)
 
 	// Act
-	result, err := selector.SelectMatlabStartingDir(mockLogger)
+	result, err := selector.SelectMATLABStartingDir(mockLogger)
 
 	// Assert
 	require.ErrorIs(t, err, expectedError)
 	assert.Empty(t, result)
 }
 
-func TestMATLABStartingDirSelector_GetMatlabStartDir_UsesFirstRootDirHappyPath(t *testing.T) {
+func TestMATLABStartingDirSelector_SelectMATLABStartingDir_UsesFirstRootDirHappyPath(t *testing.T) {
 	// Arrange
 	mockOSLayer := &mocks.MockOSLayer{}
 	defer mockOSLayer.AssertExpectations(t)
@@ -524,14 +524,14 @@ func TestMATLABStartingDirSelector_GetMatlabStartDir_UsesFirstRootDirHappyPath(t
 	selector := matlabstartingdirselector.New(mockConfigFactory, mockOSLayer, mockRootStore, mockRootPathResolver)
 
 	// Act
-	result, err := selector.SelectMatlabStartingDir(mockLogger)
+	result, err := selector.SelectMATLABStartingDir(mockLogger)
 
 	// Assert
 	require.NoError(t, err)
 	assert.Equal(t, expectedDir, result)
 }
 
-func TestMATLABStartingDirSelector_GetMatlabStartDir_RootStatErrorFallsBackToDefault(t *testing.T) {
+func TestMATLABStartingDirSelector_SelectMATLABStartingDir_RootStatErrorFallsBackToDefault(t *testing.T) {
 	// Arrange
 	mockOSLayer := &mocks.MockOSLayer{}
 	defer mockOSLayer.AssertExpectations(t)
@@ -601,7 +601,7 @@ func TestMATLABStartingDirSelector_GetMatlabStartDir_RootStatErrorFallsBackToDef
 	selector := matlabstartingdirselector.New(mockConfigFactory, mockOSLayer, mockRootStore, mockRootPathResolver)
 
 	// Act
-	result, err := selector.SelectMatlabStartingDir(mockLogger)
+	result, err := selector.SelectMATLABStartingDir(mockLogger)
 
 	// Assert
 	require.NoError(t, err)
@@ -610,7 +610,7 @@ func TestMATLABStartingDirSelector_GetMatlabStartDir_RootStatErrorFallsBackToDef
 	assert.True(t, hasWarnLog, "expected warning log about falling back to default")
 }
 
-func TestMATLABStartingDirSelector_GetMatlabStartDir_RootIsNotDirectoryFallsBackToDefault(t *testing.T) {
+func TestMATLABStartingDirSelector_SelectMATLABStartingDir_RootIsNotDirectoryFallsBackToDefault(t *testing.T) {
 	// Arrange
 	mockOSLayer := &mocks.MockOSLayer{}
 	defer mockOSLayer.AssertExpectations(t)
@@ -688,14 +688,14 @@ func TestMATLABStartingDirSelector_GetMatlabStartDir_RootIsNotDirectoryFallsBack
 	selector := matlabstartingdirselector.New(mockConfigFactory, mockOSLayer, mockRootStore, mockRootPathResolver)
 
 	// Act
-	result, err := selector.SelectMatlabStartingDir(mockLogger)
+	result, err := selector.SelectMATLABStartingDir(mockLogger)
 
 	// Assert
 	require.NoError(t, err)
 	assert.Equal(t, expectedDir, result)
 }
 
-func TestMATLABStartingDirSelector_GetMatlabStartDir_RootUNCPathFallsBackToDefault(t *testing.T) {
+func TestMATLABStartingDirSelector_SelectMATLABStartingDir_RootUNCPathFallsBackToDefault(t *testing.T) {
 	// Arrange
 	mockOSLayer := &mocks.MockOSLayer{}
 	defer mockOSLayer.AssertExpectations(t)
@@ -759,7 +759,7 @@ func TestMATLABStartingDirSelector_GetMatlabStartDir_RootUNCPathFallsBackToDefau
 	selector := matlabstartingdirselector.New(mockConfigFactory, mockOSLayer, mockRootStore, mockRootPathResolver)
 
 	// Act
-	result, err := selector.SelectMatlabStartingDir(mockLogger)
+	result, err := selector.SelectMATLABStartingDir(mockLogger)
 
 	// Assert
 	require.NoError(t, err)
@@ -768,7 +768,7 @@ func TestMATLABStartingDirSelector_GetMatlabStartDir_RootUNCPathFallsBackToDefau
 	assert.True(t, hasWarnLog, "expected warning log about falling back to default")
 }
 
-func TestMATLABStartingDirSelector_GetMatlabStartDir_RootInvalidURIFallsBackToDefault(t *testing.T) {
+func TestMATLABStartingDirSelector_SelectMATLABStartingDir_RootInvalidURIFallsBackToDefault(t *testing.T) {
 	// Arrange
 	mockOSLayer := &mocks.MockOSLayer{}
 	defer mockOSLayer.AssertExpectations(t)
@@ -830,7 +830,7 @@ func TestMATLABStartingDirSelector_GetMatlabStartDir_RootInvalidURIFallsBackToDe
 	selector := matlabstartingdirselector.New(mockConfigFactory, mockOSLayer, mockRootStore, mockRootPathResolver)
 
 	// Act
-	result, err := selector.SelectMatlabStartingDir(mockLogger)
+	result, err := selector.SelectMATLABStartingDir(mockLogger)
 
 	// Assert
 	require.NoError(t, err)
@@ -839,7 +839,7 @@ func TestMATLABStartingDirSelector_GetMatlabStartDir_RootInvalidURIFallsBackToDe
 	assert.True(t, hasWarnLog, "expected warning log about falling back to default")
 }
 
-func TestMATLABStartingDirSelector_GetMatlabStartDir_RootFileURIWithoutDriveLetterOnWindowsFallsBackToDefault(t *testing.T) {
+func TestMATLABStartingDirSelector_SelectMATLABStartingDir_RootFileURIWithoutDriveLetterOnWindowsFallsBackToDefault(t *testing.T) {
 	// Arrange
 	mockOSLayer := &mocks.MockOSLayer{}
 	defer mockOSLayer.AssertExpectations(t)
@@ -902,14 +902,14 @@ func TestMATLABStartingDirSelector_GetMatlabStartDir_RootFileURIWithoutDriveLett
 	selector := matlabstartingdirselector.New(mockConfigFactory, mockOSLayer, mockRootStore, mockRootPathResolver)
 
 	// Act
-	result, err := selector.SelectMatlabStartingDir(mockLogger)
+	result, err := selector.SelectMATLABStartingDir(mockLogger)
 
 	// Assert
 	require.NoError(t, err)
 	assert.Equal(t, expectedDir, result)
 }
 
-func TestMATLABStartingDirSelector_GetMatlabStartDir_RootNonFileSchemeFallsBackToDefault(t *testing.T) {
+func TestMATLABStartingDirSelector_SelectMATLABStartingDir_RootNonFileSchemeFallsBackToDefault(t *testing.T) {
 	// Arrange
 	mockOSLayer := &mocks.MockOSLayer{}
 	defer mockOSLayer.AssertExpectations(t)
@@ -971,7 +971,7 @@ func TestMATLABStartingDirSelector_GetMatlabStartDir_RootNonFileSchemeFallsBackT
 	selector := matlabstartingdirselector.New(mockConfigFactory, mockOSLayer, mockRootStore, mockRootPathResolver)
 
 	// Act
-	result, err := selector.SelectMatlabStartingDir(mockLogger)
+	result, err := selector.SelectMATLABStartingDir(mockLogger)
 
 	// Assert
 	require.NoError(t, err)

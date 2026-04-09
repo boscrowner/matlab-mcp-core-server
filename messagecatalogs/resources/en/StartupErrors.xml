@@ -11,6 +11,7 @@
         <entry key="InvalidLogLevel" context="error">Error with supplied arguments: invalid log level {0}.</entry>
         <entry key="FailedToCreateLogFile" context="error">Failed to create the log file "{0}".</entry>
         <entry key="InvalidDisplayMode" context="error">Error with supplied arguments: invalid display mode {0}.</entry>
+        <entry key="InvalidMATLABSessionMode" context="error">Error with supplied arguments: invalid MATLAB session mode {0}.</entry>
         <entry key="MissingValue" context="error">Error with supplied arguments: value required for option {0}.</entry>
         <entry key="ParseFailed" context="error">Error with supplied arguments: parse failed.{0}{1}</entry>
         <entry key="TelemetryInitializationFailed" context="error">Failed to initialize telemetry.</entry>

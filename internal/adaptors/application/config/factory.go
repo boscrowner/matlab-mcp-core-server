@@ -33,15 +33,24 @@ type Config interface {
 	HelpMode() bool
 	VersionMode() bool
 	WatchdogMode() bool
+
 	BaseDir() string
 	ServerInstanceID() string
+
+	// Logger
+	LogLevel() entities.LogLevel
+	RecordToLogger(logger entities.Logger)
+
+	// MATLAB
 	UseSingleMATLABSession() bool
 	InitializeMATLABOnStartup() bool
-	RecordToLogger(logger entities.Logger)
-	LogLevel() entities.LogLevel
 	PreferredLocalMATLABRoot() string
 	PreferredMATLABStartingDirectory() string
 	ShouldShowMATLABDesktop() bool
+	MATLABSessionMode() entities.MATLABSessionMode
+	MATLABSessionConnectionDetails() string
+	MATLABSessionConnectionTimeout() time.Duration
+	MATLABSessionDiscoveryTimeout() time.Duration
 	EmbeddedConnectorDetailsTimeout() time.Duration
 
 	// Telemetry

@@ -411,6 +411,182 @@ func (_c *MockConfig_LogLevel_Call) RunAndReturn(run func() entities.LogLevel) *
 	return _c
 }
 
+// MATLABSessionConnectionDetails provides a mock function for the type MockConfig
+func (_mock *MockConfig) MATLABSessionConnectionDetails() string {
+	ret := _mock.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for MATLABSessionConnectionDetails")
+	}
+
+	var r0 string
+	if returnFunc, ok := ret.Get(0).(func() string); ok {
+		r0 = returnFunc()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+	return r0
+}
+
+// MockConfig_MATLABSessionConnectionDetails_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'MATLABSessionConnectionDetails'
+type MockConfig_MATLABSessionConnectionDetails_Call struct {
+	*mock.Call
+}
+
+// MATLABSessionConnectionDetails is a helper method to define mock.On call
+func (_e *MockConfig_Expecter) MATLABSessionConnectionDetails() *MockConfig_MATLABSessionConnectionDetails_Call {
+	return &MockConfig_MATLABSessionConnectionDetails_Call{Call: _e.mock.On("MATLABSessionConnectionDetails")}
+}
+
+func (_c *MockConfig_MATLABSessionConnectionDetails_Call) Run(run func()) *MockConfig_MATLABSessionConnectionDetails_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockConfig_MATLABSessionConnectionDetails_Call) Return(s string) *MockConfig_MATLABSessionConnectionDetails_Call {
+	_c.Call.Return(s)
+	return _c
+}
+
+func (_c *MockConfig_MATLABSessionConnectionDetails_Call) RunAndReturn(run func() string) *MockConfig_MATLABSessionConnectionDetails_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// MATLABSessionConnectionTimeout provides a mock function for the type MockConfig
+func (_mock *MockConfig) MATLABSessionConnectionTimeout() time.Duration {
+	ret := _mock.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for MATLABSessionConnectionTimeout")
+	}
+
+	var r0 time.Duration
+	if returnFunc, ok := ret.Get(0).(func() time.Duration); ok {
+		r0 = returnFunc()
+	} else {
+		r0 = ret.Get(0).(time.Duration)
+	}
+	return r0
+}
+
+// MockConfig_MATLABSessionConnectionTimeout_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'MATLABSessionConnectionTimeout'
+type MockConfig_MATLABSessionConnectionTimeout_Call struct {
+	*mock.Call
+}
+
+// MATLABSessionConnectionTimeout is a helper method to define mock.On call
+func (_e *MockConfig_Expecter) MATLABSessionConnectionTimeout() *MockConfig_MATLABSessionConnectionTimeout_Call {
+	return &MockConfig_MATLABSessionConnectionTimeout_Call{Call: _e.mock.On("MATLABSessionConnectionTimeout")}
+}
+
+func (_c *MockConfig_MATLABSessionConnectionTimeout_Call) Run(run func()) *MockConfig_MATLABSessionConnectionTimeout_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockConfig_MATLABSessionConnectionTimeout_Call) Return(duration time.Duration) *MockConfig_MATLABSessionConnectionTimeout_Call {
+	_c.Call.Return(duration)
+	return _c
+}
+
+func (_c *MockConfig_MATLABSessionConnectionTimeout_Call) RunAndReturn(run func() time.Duration) *MockConfig_MATLABSessionConnectionTimeout_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// MATLABSessionDiscoveryTimeout provides a mock function for the type MockConfig
+func (_mock *MockConfig) MATLABSessionDiscoveryTimeout() time.Duration {
+	ret := _mock.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for MATLABSessionDiscoveryTimeout")
+	}
+
+	var r0 time.Duration
+	if returnFunc, ok := ret.Get(0).(func() time.Duration); ok {
+		r0 = returnFunc()
+	} else {
+		r0 = ret.Get(0).(time.Duration)
+	}
+	return r0
+}
+
+// MockConfig_MATLABSessionDiscoveryTimeout_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'MATLABSessionDiscoveryTimeout'
+type MockConfig_MATLABSessionDiscoveryTimeout_Call struct {
+	*mock.Call
+}
+
+// MATLABSessionDiscoveryTimeout is a helper method to define mock.On call
+func (_e *MockConfig_Expecter) MATLABSessionDiscoveryTimeout() *MockConfig_MATLABSessionDiscoveryTimeout_Call {
+	return &MockConfig_MATLABSessionDiscoveryTimeout_Call{Call: _e.mock.On("MATLABSessionDiscoveryTimeout")}
+}
+
+func (_c *MockConfig_MATLABSessionDiscoveryTimeout_Call) Run(run func()) *MockConfig_MATLABSessionDiscoveryTimeout_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockConfig_MATLABSessionDiscoveryTimeout_Call) Return(duration time.Duration) *MockConfig_MATLABSessionDiscoveryTimeout_Call {
+	_c.Call.Return(duration)
+	return _c
+}
+
+func (_c *MockConfig_MATLABSessionDiscoveryTimeout_Call) RunAndReturn(run func() time.Duration) *MockConfig_MATLABSessionDiscoveryTimeout_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// MATLABSessionMode provides a mock function for the type MockConfig
+func (_mock *MockConfig) MATLABSessionMode() entities.MATLABSessionMode {
+	ret := _mock.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for MATLABSessionMode")
+	}
+
+	var r0 entities.MATLABSessionMode
+	if returnFunc, ok := ret.Get(0).(func() entities.MATLABSessionMode); ok {
+		r0 = returnFunc()
+	} else {
+		r0 = ret.Get(0).(entities.MATLABSessionMode)
+	}
+	return r0
+}
+
+// MockConfig_MATLABSessionMode_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'MATLABSessionMode'
+type MockConfig_MATLABSessionMode_Call struct {
+	*mock.Call
+}
+
+// MATLABSessionMode is a helper method to define mock.On call
+func (_e *MockConfig_Expecter) MATLABSessionMode() *MockConfig_MATLABSessionMode_Call {
+	return &MockConfig_MATLABSessionMode_Call{Call: _e.mock.On("MATLABSessionMode")}
+}
+
+func (_c *MockConfig_MATLABSessionMode_Call) Run(run func()) *MockConfig_MATLABSessionMode_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run()
+	})
+	return _c
+}
+
+func (_c *MockConfig_MATLABSessionMode_Call) Return(mATLABSessionMode entities.MATLABSessionMode) *MockConfig_MATLABSessionMode_Call {
+	_c.Call.Return(mATLABSessionMode)
+	return _c
+}
+
+func (_c *MockConfig_MATLABSessionMode_Call) RunAndReturn(run func() entities.MATLABSessionMode) *MockConfig_MATLABSessionMode_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // PreferredLocalMATLABRoot provides a mock function for the type MockConfig
 func (_mock *MockConfig) PreferredLocalMATLABRoot() string {
 	ret := _mock.Called()

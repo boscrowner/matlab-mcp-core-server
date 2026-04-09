@@ -8,3 +8,10 @@ const (
 	DisplayModeDesktop   DisplayMode = "desktop"
 	DisplayModeNoDesktop DisplayMode = "nodesktop"
 )
+
+type MATLABSessionMode string
+
+const (
+	MATLABSessionModeNew      MATLABSessionMode = "new"
+	MATLABSessionModeExisting MATLABSessionMode = "existing"
+)
