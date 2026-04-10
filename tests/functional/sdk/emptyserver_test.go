@@ -4,7 +4,9 @@ package sdk_test
 
 import (
 	"os/exec"
+	"strings"
 	"testing"
+	"time"
 
 	"github.com/matlab/matlab-mcp-core-server/tests/functional/sdk/testbinaries"
 	"github.com/stretchr/testify/suite"
@@ -85,4 +87,24 @@ func (s *EmptyServerTestSuite) TestSDK_EmptyServer_NameTitleAndInstructionNoTool
 
 	s.Require().NotNil(listResourcesResponse)
 	s.Empty(listResourcesResponse.Resources)
+
+	// Verify client info is logged
+	s.Eventually(func() bool {
+		logContent, err := session.ReadServerLogs()
+		if err != nil {
+			return false
+		}
+
+		foundClientSessionLog := strings.Contains(logContent, "New client session")
+		foundClientName := strings.Contains(logContent, session.ClientName())
+		foundClientVersion := strings.Contains(logContent, session.ClientVersion())
+		foundClientTitle := strings.Contains(logContent, session.ClientTitle())
+		foundClientURL := strings.Contains(logContent, session.ClientWebsiteURL())
+
+		return foundClientSessionLog &&
+			foundClientName &&
+			foundClientVersion &&
+			foundClientTitle &&
+			foundClientURL
+	}, 2*time.Second, 200*time.Millisecond)
 }

@@ -233,6 +233,11 @@ func TestOrchestrator_StartAndWaitForCompletion_DirectoryError(t *testing.T) {
 		Once()
 
 	mockConfig.EXPECT().
+		Version().
+		Return("test-version").
+		Once()
+
+	mockConfig.EXPECT().
 		RecordToLogger(mockLogger.AsMockArg()).
 		Return().
 		Once()
@@ -313,7 +318,7 @@ func TestOrchestrator_StartAndWaitForCompletion_WatchdogStartError(t *testing.T)
 
 	mockLogger := testutils.NewInspectableLogger()
 	ctx := t.Context()
-	expectedError := messages.AnError
+	expectedError := assert.AnError
 
 	mockConfigFactory.EXPECT().
 		Config().
@@ -323,6 +328,11 @@ func TestOrchestrator_StartAndWaitForCompletion_WatchdogStartError(t *testing.T)
 	mockLoggerFactory.EXPECT().
 		GetGlobalLogger().
 		Return(mockLogger, nil).
+		Once()
+
+	mockConfig.EXPECT().
+		Version().
+		Return("test-version").
 		Once()
 
 	mockConfig.EXPECT().
@@ -427,6 +437,11 @@ func TestOrchestrator_StartAndWaitForCompletion_DependenciesError(t *testing.T) 
 	mockLoggerFactory.EXPECT().
 		GetGlobalLogger().
 		Return(mockLogger, nil).
+		Once()
+
+	mockConfig.EXPECT().
+		Version().
+		Return("test-version").
 		Once()
 
 	mockConfig.EXPECT().
@@ -537,6 +552,7 @@ func TestOrchestrator_StartAndWaitForCompletion_HappyPath(t *testing.T) {
 	expectedDependenciesProviderResources := definition.NewDependenciesProviderResources(mockLogger, mockConfig, mockMessageCatalog, mockWatchdogClient)
 	expectedToolProviderResources := definition.NewToolsProviderResources(mockLogger, mockConfig, mockMessageCatalog, expectedDependencies, mockLoggerFactory)
 	expectedTools := []tools.Tool{mockTool}
+	expectedVersion := "test-version"
 
 	mockLoggerFactory.EXPECT().
 		GetGlobalLogger().
@@ -546,6 +562,11 @@ func TestOrchestrator_StartAndWaitForCompletion_HappyPath(t *testing.T) {
 	mockConfigFactory.EXPECT().
 		Config().
 		Return(mockConfig, nil).
+		Once()
+
+	mockConfig.EXPECT().
+		Version().
+		Return(expectedVersion).
 		Once()
 
 	mockConfig.EXPECT().
@@ -632,6 +653,11 @@ func TestOrchestrator_StartAndWaitForCompletion_HappyPath(t *testing.T) {
 
 	// Assert
 	require.NoError(t, <-errC, "StartAndWaitForCompletion should not return an error on signal interrupt")
+
+	logs := mockLogger.InfoLogs()
+	fields, found := logs["Initiating application startup"]
+	require.True(t, found, "Expected info log for application startup")
+	assert.Equal(t, expectedVersion, fields["version"])
 }
 
 func TestOrchestrator_StartAndWaitForCompletion_ServerError(t *testing.T) {
@@ -686,6 +712,11 @@ func TestOrchestrator_StartAndWaitForCompletion_ServerError(t *testing.T) {
 	mockConfigFactory.EXPECT().
 		Config().
 		Return(mockConfig, nil).
+		Once()
+
+	mockConfig.EXPECT().
+		Version().
+		Return("test-version").
 		Once()
 
 	mockConfig.EXPECT().
@@ -814,6 +845,11 @@ func TestOrchestrator_StartAndWaitForCompletion_WaitForShutdownToCompleteError(t
 	mockConfigFactory.EXPECT().
 		Config().
 		Return(mockConfig, nil).
+		Once()
+
+	mockConfig.EXPECT().
+		Version().
+		Return("test-version").
 		Once()
 
 	mockConfig.EXPECT().
@@ -959,6 +995,11 @@ func TestOrchestrator_StartAndWaitForCompletion_WatchdogStopError(t *testing.T) 
 	mockConfigFactory.EXPECT().
 		Config().
 		Return(mockConfig, nil).
+		Once()
+
+	mockConfig.EXPECT().
+		Version().
+		Return("test-version").
 		Once()
 
 	mockConfig.EXPECT().

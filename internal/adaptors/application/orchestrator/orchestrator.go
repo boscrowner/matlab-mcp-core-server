@@ -124,7 +124,9 @@ func (o *Orchestrator) StartAndWaitForCompletion(ctx context.Context) error {
 		logger.Info("Application shutdown complete")
 	}()
 
-	logger.Info("Initiating application startup")
+	logger.
+		With("version", config.Version()).
+		Info("Initiating application startup")
 	config.RecordToLogger(logger)
 
 	directory, messagesErr := o.directoryFactory.Directory()
