@@ -18,11 +18,12 @@ func TestGetUserConfig_HappyPath(t *testing.T) {
 
 	// Assert
 	require.NoError(t, err)
-	require.Len(t, config, 5)
+	require.Len(t, config, 6)
 
 	expectedKeys := []string{
 		"PreferredLocalMATLABRoot",
 		"PreferredMATLABStartingDirectory",
+		"BaseDir",
 		"InitializeMATLABOnStartup",
 		"DisableTelemetry",
 		"MATLABDisplayMode",
@@ -58,6 +59,7 @@ func TestGetUserConfig_DirectoryTypeOverrides(t *testing.T) {
 	expectedDirectoryKeys := []string{
 		"PreferredLocalMATLABRoot",
 		"PreferredMATLABStartingDirectory",
+		"BaseDir",
 	}
 
 	// Act
@@ -99,6 +101,7 @@ func TestGetUserConfig_DefaultValues(t *testing.T) {
 
 	assert.Empty(t, config["PreferredLocalMATLABRoot"].Default)
 	assert.Empty(t, config["PreferredMATLABStartingDirectory"].Default)
+	assert.Empty(t, config["BaseDir"].Default)
 	assert.Equal(t, false, config["InitializeMATLABOnStartup"].Default)
 	assert.Equal(t, false, config["DisableTelemetry"].Default)
 	assert.Equal(t, "desktop", config["MATLABDisplayMode"].Default)

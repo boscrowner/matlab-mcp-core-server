@@ -31,6 +31,7 @@
       "env": {
         "__MATLAB_MCP_CORE_SERVER_MCPB_MATLAB_ROOT": "${user_config.PreferredLocalMATLABRoot}",
         "__MATLAB_MCP_CORE_SERVER_MCPB_INITIAL_WD": "${user_config.PreferredMATLABStartingDirectory}",
+        "__MATLAB_MCP_CORE_SERVER_MCPB_LOG_DIR": "${user_config.BaseDir}",
         "__MATLAB_MCP_CORE_SERVER_MCPB_INIT_ON_START": "${user_config.InitializeMATLABOnStartup}",
         "__MATLAB_MCP_CORE_SERVER_MCPB_DISABLE_TELEM": "${user_config.DisableTelemetry}",
         "__MATLAB_MCP_CORE_SERVER_MCPB_DISPLAY_MODE": "${user_config.MATLABDisplayMode}"

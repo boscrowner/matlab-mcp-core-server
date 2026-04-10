@@ -39,6 +39,11 @@ func GetUserConfig() (map[string]userConfigEntry, error) {
 			TypeOverride: "directory",
 		},
 		{
+			ParameterWithDescriptionFromMessageCatalog: defaultparameters.BaseDir(),
+			Title:        "Log Folder",
+			TypeOverride: "directory",
+		},
+		{
 			ParameterWithDescriptionFromMessageCatalog: defaultparameters.InitializeMATLABOnStartup(),
 			Title: "Initialize MATLAB on Startup",
 		},
