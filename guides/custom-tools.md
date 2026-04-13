@@ -9,23 +9,24 @@ Custom tool arguments support `string`, `number`, `integer`, and `boolean` data 
 ## Table of Contents
 - [Get Started](#get-started)
 - [Extension File Format](#extension-file-format)
-    - [Tool](#tools)
-    - [Signature](#signatures)
+    - [Tools](#tools)
+    - [Signatures](#signatures)
     - [inputSchema](#inputschema)
     - [Supported Property Types](#supported-property-types)
-    - [Annotations](#supported-property-type)
+    - [Annotations](#annotations)
 
 ## Get Started
 
 This example shows how to add a custom tool to the MCP server. First you define the MATLAB function you want the tool to use. Then you define the tool in a JSON file, along with a signature for your MATLAB function. Then you pass this JSON file to the MCP server using the `extension file` argument.
 
-1. Create the MATLAB function `greet_user.m` and add it to the MATLAB path:
-
+1. Create the MATLAB function `greet_user.m`:
     ```matlab
     function greet_user(name, age)
         disp("Hello " + name + ", you are " + age + " years old!");
     end
-
+    ```
+    and add it to the MATLAB path:
+    ```
     addpath('/path/to/your/functions')
     ```
 
@@ -79,7 +80,7 @@ Each entry in the `tools` array defines an MCP tool following the [Tool Schema (
 |-------|----------|-------------|
 | `name` | Yes | Unique tool identifier |
 | `title` | Yes | Human-readable title |
-| `description` | Yes | Explains what the tool does to the AI modela|
+| `description` | Yes | Explains what the tool does to the AI model |
 | `inputSchema` | Yes | JSON Schema defining the tool's input arguments |
 | `annotations` | No | MCP tool annotations for the AI client |
 
