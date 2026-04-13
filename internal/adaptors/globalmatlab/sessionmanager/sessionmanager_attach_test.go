@@ -4,7 +4,6 @@ package sessionmanager_test
 
 import (
 	"context"
-	"path/filepath"
 	"testing"
 	"testing/synctest"
 	"time"
@@ -44,21 +43,9 @@ func TestSessionManager_StartSession_AttachMode_HappyPath(t *testing.T) {
 
 	ctx := context.WithValue(t.Context(), contextKey, contextKeyValue)
 	expectedSessionID := entities.SessionID(456)
-	expectedMATLABRoot := filepath.Join("some", "matlab", "root")
-	expectedMATLABStartingDir := filepath.Join("some", "starting", "dir")
 	discoveryTimeout := 5 * time.Second
 
 	expectedAttachSessionDetails := entities.AttachToExistingSession{}
-
-	mockMATLABRootSelector.EXPECT().
-		SelectMATLABRoot(ctx, mockLogger.AsMockArg()).
-		Return(expectedMATLABRoot, nil).
-		Once()
-
-	mockMATLABStartingDirSelector.EXPECT().
-		SelectMATLABStartingDir(mockLogger.AsMockArg()).
-		Return(expectedMATLABStartingDir, nil).
-		Once()
 
 	mockConfigFactory.EXPECT().
 		Config().
@@ -121,22 +108,10 @@ func TestSessionManager_StartSession_AttachMode_StartMATLABSessionError(t *testi
 	const contextKeyValue = "testValue"
 
 	ctx := context.WithValue(t.Context(), contextKey, contextKeyValue)
-	expectedMATLABRoot := filepath.Join("some", "matlab", "root")
-	expectedMATLABStartingDir := filepath.Join("some", "starting", "dir")
 	discoveryTimeout := 100 * time.Millisecond
 	expectedError := assert.AnError
 
 	expectedAttachSessionDetails := entities.AttachToExistingSession{}
-
-	mockMATLABRootSelector.EXPECT().
-		SelectMATLABRoot(ctx, mockLogger.AsMockArg()).
-		Return(expectedMATLABRoot, nil).
-		Once()
-
-	mockMATLABStartingDirSelector.EXPECT().
-		SelectMATLABStartingDir(mockLogger.AsMockArg()).
-		Return(expectedMATLABStartingDir, nil).
-		Once()
 
 	mockConfigFactory.EXPECT().
 		Config().
@@ -201,21 +176,9 @@ func TestSessionManager_StartSession_AttachMode_ImmediateSuccess(t *testing.T) {
 
 		ctx := context.WithValue(t.Context(), contextKey, contextKeyValue)
 		expectedSessionID := entities.SessionID(123)
-		expectedMATLABRoot := filepath.Join("some", "matlab", "root")
-		expectedMATLABStartingDir := filepath.Join("some", "starting", "dir")
 		discoveryTimeout := 10 * time.Second
 
 		expectedAttachSessionDetails := entities.AttachToExistingSession{}
-
-		mockMATLABRootSelector.EXPECT().
-			SelectMATLABRoot(ctx, mockLogger.AsMockArg()).
-			Return(expectedMATLABRoot, nil).
-			Once()
-
-		mockMATLABStartingDirSelector.EXPECT().
-			SelectMATLABStartingDir(mockLogger.AsMockArg()).
-			Return(expectedMATLABStartingDir, nil).
-			Once()
 
 		mockConfigFactory.EXPECT().
 			Config().
@@ -281,22 +244,10 @@ func TestSessionManager_StartSession_AttachMode_RetryThenSuccess(t *testing.T) {
 
 		ctx := context.WithValue(t.Context(), contextKey, contextKeyValue)
 		expectedSessionID := entities.SessionID(123)
-		expectedMATLABRoot := filepath.Join("some", "matlab", "root")
-		expectedMATLABStartingDir := filepath.Join("some", "starting", "dir")
 		retryInterval := 200 * time.Millisecond
 		discoveryTimeout := 300 * time.Millisecond
 
 		expectedAttachSessionDetails := entities.AttachToExistingSession{}
-
-		mockMATLABRootSelector.EXPECT().
-			SelectMATLABRoot(ctx, mockLogger.AsMockArg()).
-			Return(expectedMATLABRoot, nil).
-			Once()
-
-		mockMATLABStartingDirSelector.EXPECT().
-			SelectMATLABStartingDir(mockLogger.AsMockArg()).
-			Return(expectedMATLABStartingDir, nil).
-			Once()
 
 		mockConfigFactory.EXPECT().
 			Config().
@@ -369,23 +320,11 @@ func TestSessionManager_StartSession_AttachMode_RetryExhausted(t *testing.T) {
 		const contextKeyValue = "testValue"
 
 		ctx := context.WithValue(t.Context(), contextKey, contextKeyValue)
-		expectedMATLABRoot := filepath.Join("some", "matlab", "root")
-		expectedMATLABStartingDir := filepath.Join("some", "starting", "dir")
 		retryInterval := 200 * time.Millisecond
 		discoveryTimeout := 300 * time.Millisecond
 
 		expectedAttachSessionDetails := entities.AttachToExistingSession{}
 		expectedError := assert.AnError
-
-		mockMATLABRootSelector.EXPECT().
-			SelectMATLABRoot(ctx, mockLogger.AsMockArg()).
-			Return(expectedMATLABRoot, nil).
-			Once()
-
-		mockMATLABStartingDirSelector.EXPECT().
-			SelectMATLABStartingDir(mockLogger.AsMockArg()).
-			Return(expectedMATLABStartingDir, nil).
-			Once()
 
 		mockConfigFactory.EXPECT().
 			Config().

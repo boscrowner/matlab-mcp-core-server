@@ -184,8 +184,26 @@ func TestSessionManager_StartSession_LocalInstall_SelectMATLABRootError(t *testi
 	mockMATLABStartingDirSelector := &mocks.MockMATLABStartingDirSelector{}
 	defer mockMATLABStartingDirSelector.AssertExpectations(t)
 
+	mockConfig := &configmocks.MockConfig{}
+	defer mockConfig.AssertExpectations(t)
+
 	ctx := t.Context()
 	expectedError := assert.AnError
+
+	mockConfigFactory.EXPECT().
+		Config().
+		Return(mockConfig, nil).
+		Once()
+
+	mockConfig.EXPECT().
+		MATLABSessionMode().
+		Return(entities.MATLABSessionModeNew).
+		Once()
+
+	mockConfig.EXPECT().
+		ShouldShowMATLABDesktop().
+		Return(false).
+		Once()
 
 	mockMATLABRootSelector.EXPECT().
 		SelectMATLABRoot(ctx, mockLogger.AsMockArg()).

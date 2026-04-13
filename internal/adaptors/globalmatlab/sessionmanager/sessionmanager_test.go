@@ -3,7 +3,6 @@
 package sessionmanager_test
 
 import (
-	"path/filepath"
 	"testing"
 
 	"github.com/matlab/matlab-mcp-core-server/internal/adaptors/globalmatlab/sessionmanager"
@@ -388,19 +387,7 @@ func TestSessionManager_StartSession_ConfigError(t *testing.T) {
 	defer mockMATLABStartingDirSelector.AssertExpectations(t)
 
 	ctx := t.Context()
-	expectedMATLABRoot := filepath.Join("some", "matlab", "root")
-	expectedMATLABStartingDir := filepath.Join("some", "starting", "dir")
 	configErr := messages.AnError
-
-	mockMATLABRootSelector.EXPECT().
-		SelectMATLABRoot(ctx, mockLogger.AsMockArg()).
-		Return(expectedMATLABRoot, nil).
-		Once()
-
-	mockMATLABStartingDirSelector.EXPECT().
-		SelectMATLABStartingDir(mockLogger.AsMockArg()).
-		Return(expectedMATLABStartingDir, nil).
-		Once()
 
 	mockConfigFactory.EXPECT().
 		Config().

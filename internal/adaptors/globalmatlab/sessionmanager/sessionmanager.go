@@ -64,37 +64,6 @@ func New(
 }
 
 func (s *SessionManager) StartSession(ctx context.Context, logger entities.Logger) (entities.SessionID, error) {
-	s.initOnce.Do(func() {
-		s.initErr = s.initializeStartupConfig(ctx, logger)
-	})
-	if s.initErr != nil {
-		return 0, s.initErr
-	}
-
-	return s.startNewSession(ctx, logger)
-}
-
-func (s *SessionManager) ShouldRestart() (bool, messages.Error) {
-	cfg, err := s.configFactory.Config()
-	if err != nil {
-		return false, err
-	}
-
-	shouldNotRestart := cfg.MATLABSessionMode() == entities.MATLABSessionModeExisting &&
-		cfg.MATLABSessionConnectionDetails() != ""
-
-	return !shouldNotRestart, nil
-}
-
-func (s *SessionManager) StopMATLABSession(ctx context.Context, sessionLogger entities.Logger, sessionID entities.SessionID) error {
-	return s.matlabManager.StopMATLABSession(ctx, sessionLogger, sessionID)
-}
-
-func (s *SessionManager) GetMATLABSessionClient(ctx context.Context, sessionLogger entities.Logger, sessionID entities.SessionID) (entities.MATLABSessionClient, error) {
-	return s.matlabManager.GetMATLABSessionClient(ctx, sessionLogger, sessionID)
-}
-
-func (s *SessionManager) startNewSession(ctx context.Context, logger entities.Logger) (entities.SessionID, error) {
 	cfg, messagesErr := s.configFactory.Config()
 	if messagesErr != nil {
 		return 0, messagesErr
@@ -117,6 +86,26 @@ func (s *SessionManager) startNewSession(ctx context.Context, logger entities.Lo
 	return sessionID, nil
 }
 
+func (s *SessionManager) ShouldRestart() (bool, messages.Error) {
+	cfg, err := s.configFactory.Config()
+	if err != nil {
+		return false, err
+	}
+
+	shouldNotRestart := cfg.MATLABSessionMode() == entities.MATLABSessionModeExisting &&
+		cfg.MATLABSessionConnectionDetails() != ""
+
+	return !shouldNotRestart, nil
+}
+
+func (s *SessionManager) StopMATLABSession(ctx context.Context, sessionLogger entities.Logger, sessionID entities.SessionID) error {
+	return s.matlabManager.StopMATLABSession(ctx, sessionLogger, sessionID)
+}
+
+func (s *SessionManager) GetMATLABSessionClient(ctx context.Context, sessionLogger entities.Logger, sessionID entities.SessionID) (entities.MATLABSessionClient, error) {
+	return s.matlabManager.GetMATLABSessionClient(ctx, sessionLogger, sessionID)
+}
+
 func (s *SessionManager) initializeStartupConfig(ctx context.Context, logger entities.Logger) error {
 	matlabRoot, err := s.matlabRootSelector.SelectMATLABRoot(ctx, logger)
 	if err != nil {
@@ -136,6 +125,13 @@ func (s *SessionManager) initializeStartupConfig(ctx context.Context, logger ent
 }
 
 func (s *SessionManager) getSessionFromLocalMATLABInstallation(ctx context.Context, logger entities.Logger, showMATLABDesktop bool) (entities.SessionID, error) {
+	s.initOnce.Do(func() {
+		s.initErr = s.initializeStartupConfig(ctx, logger)
+	})
+	if s.initErr != nil {
+		return 0, s.initErr
+	}
+
 	startRequest := entities.LocalSessionDetails{
 		MATLABRoot:             s.matlabRoot,
 		IsStartingDirectorySet: s.matlabStartingDir != "",
