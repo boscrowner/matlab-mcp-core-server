@@ -14,6 +14,8 @@ MathWorks welcomes your feedback on the MATLAB MCP Core Server.
 > **Sync reminder**: Remember to periodically pull from upstream (`git fetch upstream && git merge upstream/main`) to stay up to date with official fixes.
 >
 > **Local dev setup**: I run this alongside MATLAB R2024b. If testing locally, make sure the MATLAB engine Python package is installed (`cd "<MATLAB root>/extern/engines/python" && pip install .`) before starting the server.
+>
+> **Python env note**: I use a dedicated conda environment (`conda activate matlab-mcp`) to keep the MATLAB engine dependencies isolated from other projects. Recommended if you work with multiple Python versions.
 
 ---
 
