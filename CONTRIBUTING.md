@@ -10,6 +10,8 @@ MathWorks welcomes your feedback on the MATLAB MCP Core Server.
 > If you stumbled across this fork, I'd recommend opening issues or PRs on the upstream repo instead.
 >
 > **Note to self**: I've been using this fork to experiment with custom tool configurations. Any changes here are for personal testing only and may be unstable.
+>
+> **Sync reminder**: Remember to periodically pull from upstream (`git fetch upstream && git merge upstream/main`) to stay up to date with official fixes.
 
 ---
 
