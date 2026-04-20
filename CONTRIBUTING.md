@@ -12,6 +12,8 @@ MathWorks welcomes your feedback on the MATLAB MCP Core Server.
 > **Note to self**: I've been using this fork to experiment with custom tool configurations. Any changes here are for personal testing only and may be unstable.
 >
 > **Sync reminder**: Remember to periodically pull from upstream (`git fetch upstream && git merge upstream/main`) to stay up to date with official fixes.
+>
+> **Local dev setup**: I run this alongside MATLAB R2024b. If testing locally, make sure the MATLAB engine Python package is installed (`cd "<MATLAB root>/extern/engines/python" && pip install .`) before starting the server.
 
 ---
 
