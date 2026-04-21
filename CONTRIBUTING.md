@@ -20,6 +20,8 @@ MathWorks welcomes your feedback on the MATLAB MCP Core Server.
 > **Troubleshooting tip**: If the server fails to start and you see a `MatlabExecutionError`, double-check that MATLAB is on your system PATH (`matlab -batch "disp('ok')"` should print `ok`). This tripped me up more than once.
 >
 > **Logging tip**: To get more verbose output when debugging, set the environment variable `MCP_LOG_LEVEL=debug` before starting the server. Helps a lot when tracing why a tool call silently fails.
+>
+> **Timeout note**: I've noticed that long-running MATLAB scripts can cause the MCP client to time out before getting a response. If you hit this, try breaking your script into smaller chunks or increasing the client timeout if your MCP host supports it.
 
 ---
 
