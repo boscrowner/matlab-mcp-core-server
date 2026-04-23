@@ -22,6 +22,8 @@ MathWorks welcomes your feedback on the MATLAB MCP Core Server.
 > **Logging tip**: To get more verbose output when debugging, set the environment variable `MCP_LOG_LEVEL=debug` before starting the server. Helps a lot when tracing why a tool call silently fails.
 >
 > **Timeout note**: I've noticed that long-running MATLAB scripts can cause the MCP client to time out before getting a response. If you hit this, try breaking your script into smaller chunks or increasing the client timeout if your MCP host supports it.
+>
+> **Windows note**: On Windows, the conda activate step may need to be run from an Anaconda Prompt rather than a standard terminal, otherwise `matlab` may not be found on PATH even if it's set correctly in System Environment Variables.
 
 ---
 
